@@ -1,0 +1,97 @@
+html {
+  font-family: Arial;
+}
+
+.fields > div {
+  margin-bottom: 2px;
+}
+.fields input {
+  font-family: monospace;
+  width: 150px;
+}
+.fields input[type='checkbox']{
+  width: 20px;
+}
+input.long{
+  width: 300px;
+}
+.name {
+  background: #fceeee;
+}
+
+.image {
+  background: #eefcee;
+}
+b.volume1 {
+  background: #eeeefc;
+}
+pre input {
+  border: none;
+  border-bottom: 1px solid #ccc;
+
+}
+pre {
+  padding: 0px;
+  margin: 0px;
+    padding-left: 1rem;
+}
+
+table td:nth-child(2){
+  background: #f6f6f6;
+}
+
+table tr:nth-child(1) td:nth-child(2){
+  background: #fff;
+  padding: 5px;
+}
+tr {
+  margin:0px;
+  padding: 0px;
+}
+
+td {
+  vertical-align: top;
+  margin:0px;
+  padding: 0px;
+}
+tdx {
+  border: 1px solid #ccc;
+}
+
+.hidden {
+  opacity: 0.3;
+  width:1px;
+  overflow:hidden;
+  display:inline-block;
+}
+.small {
+  padding: 0px;
+  border: 1px solid #ccc;
+  width: 10px;
+}
+
+.line {
+  border-top: 1px solid #eee;
+  font-size: 0.8rem;
+}
+
+pre input {
+  font-family: monospace;
+}
+
+.actions {
+  v-align:top;
+  padding:1rem;
+}
+
+.actions a {
+  padding-top: 10px;
+  display: inline-block;
+  color: #326ce5;
+  border-bottom: 1px dotted #326ce5;
+  text-decoration: none;
+}
+
+.config textarea {
+  margin-left: 3rem;
+}

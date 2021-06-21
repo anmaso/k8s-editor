@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>k8s descriptor editor</title>
+        <link rel="stylesheet" href="style.css">
+
+    <script src="https://unpkg.com/vue@next"></script>  
+    <script src="/fileSaver.js"></script>
+    <script src="/samples.js"></script>
+  </head>
+  <body>
+    <div id="vue">
+      
+      
+      
+        
+        <table cellspacing="0">
+<tr>
+  <td></td>
+  <td>
+    <h1><img src="https://cdn.glitch.com/80a8493d-689e-483d-8ae9-bc1956812b5a%2Fkubernetes_logo_icon.png?v=1624185071302" height="40" align="bottom"> k8s descriptor helper</h1>
+              
+  </td>          
+  <td></td>
+</tr>
+<tr>
+  <td width="300" class="line">Add optional sections by checking the boxes</td>
+  <td><pre id="deployment" class="deployment">
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  <span class="name">name</span>: <input v-model="values.name" /><span class="hidden">{{values.name}}</span>
+spec:<span v-if="section.replicas">
+  replicas: <input v-model="values.replicas"/><span class="hidden">{{values.replicas}}</span></span>
+  selector:
+    matchLabels:
+      app: <b class="name">{{values.name}}</b>
+  template:
+    metadata:
+      labels:
+        app: <b class="name">{{values.name}}</b>
+    spec:</pre>
+  </td>
+  <td rowspan="10" class="actions" >
+    <a href="#" @click="copyDeployment">copy to clipboard</a><br/>
+    <a href="#" @click="saveDeployment">save deployment to {{values.name}}-deployment.yaml</a><br/>
+    <a href="#" @click="saveService" v-if="section.service">save service to {{values.name}}-service.yaml</a><br/>
+    <a href="#" @click="saveConfig" v-if="section.config">save config map to {{values.name}}-external-config.yaml</a><br/>
+    <a href="#" @click="saveKustomize" v-if="section.kustomize">save kustomization to kustomization.yaml</a><br/>
+    <br/>
+    <a href="#" @click="save">save values to local storage</a><br/>
+    <a href="#" @click="clear">clear local storage</a><br/>
+    <br/>
+    <a href="#" @click="load('complete')">load complete example</a><br/>
+    <a href="#" @click="load('nginx')">load nginx sample</a><br/>
+    <br/>
+    
+  </td>
+          
+          
+</tr>
+<tr>
+  <td width="300" class="line"><input type="checkbox" v-model="section.imagePullSecrets"/>image Pull Secrets</td>
+  <td><pre v-if="section.imagePullSecrets" class="deployment">      imagePullSecrets:
+      - name: <input class="long" v-model="values.imagePullSecrets"/><span class="hidden">{{values.imagePullSecrets}}</span></pre>
+  </td>
+</tr>
+          
+<tr>
+  <td></td>
+  <td>
+    <pre class="deployment">      containers:
+      - name: <b class="name">{{values.name}}</b>
+        image: <input class="long" v-model="values.image"/><span class="hidden">{{values.image}}</span></pre>
+  </td>
+</tr>
+<tr>
+  <td class="line">
+    <input type="checkbox" v-model="section.ports"/>ports 
+  </td>
+  <td>
+    <pre class="deployment" v-if="section.ports">        ports:
+        - containerPort: <input v-model="values.port"/><span class="hidden">{{values.port}}</span></pre>
+  </td>
+</tr>
+<tr>
+  <td class="line">
+    <input type="checkbox" v-model="section.cmd"/>cmd / args 
+  </td>
+  <td><pre v-if="section.cmd" class="deployment">        command: [<input class="long" v-model="values.cmd"><span class="hidden">{{values.cmd}}</span>]
+        args: [<input class="long" v-model="values.args"><span class="hidden">{{values.args}}</span>]</pre>
+  </td>
+</tr>
+<tr>
+  <td class="line">
+    <input type="checkbox" v-model="section.envs"/>env vars<br/>
+    
+  </td>
+  <td><pre v-if="section.envs" class="deployment">        env: 
+        <span v-for="env in values.envs">- name: <input v-model="env.name"><span class="hidden">{{env.name}}</span>
+        value: <input v-model="env.value"><button class="small" @click="removeEnvs">-</button><button class="small" @click="addEnvs">+</button><span class="hidden">{{env.value}}</span>
+        </span></pre>
+    
+  </td>
+</tr>
+<tr>
+  <td class="line"><input type="checkbox" v-model="section.resources"/>resources </td>
+  <td><pre id="deployment2" v-if="section.resources" class="deployment">
+        resources:
+          requests:
+            memory: "<input v-model="values.request.ram"/><button class="small" @click="request_ram_minus">-</button><button class="small" @click="request_ram_plus">+</button><span class="hidden">{{values.request.ram}}</span>"
+            cpu: "<input v-model="values.request.cpu"/><button class="small" @click="request_cpu_minus">-</button><button class="small" @click="request_cpu_plus">+</button><span class="hidden">{{values.request.cpu}}</span>"
+          limits:
+            memory: "<input v-model="values.limit.ram"/><button class="small" @click="limit_ram_minus">-</button><button class="small" @click="limit_ram_plus">+</button><span class="hidden">{{values.limit.ram}}</span>"
+            cpu: "<input v-model="values.limit.cpu"/><button class="small" @click="limit_cpu_minus">-</button><button class="small" @click="limit_cpu_plus">+</button><span class="hidden">{{values.limit.cpu}}</span>"</pre>
+  </td>
+</tr>
+<tr>
+  <td class="line">
+    <input type="checkbox" v-model="section.volume1">volume mount
+  </td>
+  <td><pre v-if="section.volume1" class="deployment">        volumeMounts:
+          - <b class="volume1">name</b>: <input v-model="values.volume1"><span class="hidden">{{values.volume1}}</span>
+            mountPath: <input class="long" v-model="values.path1"><span class="hidden">{{values.path1}}</span>
+            subPath: <input v-model="values.file1"><span class="hidden">{{values.file1}}</span></pre>
+  </td>
+</tr>
+<tr>
+  <td></td>
+  <td><pre v-if="section.volume1" class="deployment">      volumes:
+      - name: <b class="volume1">{{values.volume1}}</b>
+        configMap:
+          name: <b class="name">{{values.name}}</b>-external-config</pre></td>
+</tr>
+<tr>
+  <td class="line">
+    <input type="checkbox" v-model="section.config">config map
+  </td>
+  <td><pre v-if="section.config" class="config">
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{values.name}}-external-config
+data:
+  {{values.file1}}: |
+<textarea v-model="values.configdata" cols="50" rows="10"></textarea><span class="hidden" pre-line>{{computedConfig}}</span></pre>
+  </td>
+</tr>
+<tr>  
+  <td class="line"><input type="checkbox" v-model="section.service">service</td>
+  <td><pre v-if="section.service" class="service">
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: <b class="name">{{values.name}}</b>
+spec:
+  selector:
+    app: <b class="name">{{values.name}}</b>
+  type: <input v-model="values.serviceType"><button class="small" @click="type_minus">-</button><button class="small" @click="type_plus">+</button><span class="hidden">{{values.serviceType}}</span>
+  ports:
+  - name: http
+    protocol: TCP
+    port: <input v-model="values.port"><span class="hidden">{{values.port}}</span>
+    targetPort: <input v-model="values.targetPort"><span class="hidden">{{values.targetPort}}</span>
+      </pre>
+  </td>
+</tr>
+          
+<tr>
+  <td class="line"><input type="checkbox" v-model="section.kustomize">kustomize</td>
+  <td><pre v-if="section.kustomize" class="kustomize">
+---
+resources:
+- <b class="name">{{values.name}}</b>-deployment.yaml
+- <b class="name">{{values.name}}</b>-service.yaml
+
+configMapGenerator:
+- name: <b class="name">{{values.name}}</b>-external-config
+  files:
+  - {{values.file1}}={{values.file1}}
+
+images:
+- name: {{values.image}}
+  digest: sha256:<input v-model="values.digest"><span class="hidden">{{values.digest}}</span>
+    </pre>
+  </td>
+</tr>  
+          
+        </table>
+      
+    </div>
+  </body>
+  <script src="/script.js"></script>  
+</html>

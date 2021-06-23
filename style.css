@@ -2,18 +2,24 @@ html {
   font-family: Arial;
 }
 
+body {
+  margin: auto;
+  width: 940px;
+}
+
 .fields > div {
   margin-bottom: 2px;
 }
 .fields input {
   font-family: monospace;
+  font-family: 'Ubuntu Mono', monospace;
   width: 150px;
 }
 .fields input[type='checkbox']{
   width: 20px;
 }
 input.long{
-  width: 300px;
+  width: 200px;
 }
 .name {
   background: #fceeee;
@@ -25,17 +31,23 @@ input.long{
 b.volume1 {
   background: #eeeefc;
 }
-pre input {
-  border: none;
-  border-bottom: 1px solid #ccc;
 
-}
 pre {
   padding: 0px;
   margin: 0px;
-    padding-left: 1rem;
+  margin-right: 5px;
+  padding-left: 1rem;
+  font-family: 'Ubuntu Mono', monospace;
 }
 
+pre input {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding: 2px;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 1rem;
+
+}
 table td:nth-child(2){
   background: #f6f6f6;
 }
@@ -75,9 +87,7 @@ tdx {
   font-size: 0.8rem;
 }
 
-pre input {
-  font-family: monospace;
-}
+
 
 .actions {
   v-align:top;
@@ -94,4 +104,10 @@ pre input {
 
 .config textarea {
   margin-left: 3rem;
+}
+
+.ribbon {
+  position: absolute;
+  right: 5px;
+  top: 5px;
 }

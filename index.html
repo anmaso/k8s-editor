@@ -7,8 +7,14 @@
     <script src="https://unpkg.com/vue@next"></script>  
     <script src="/fileSaver.js"></script>
     <script src="/samples.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap" rel="stylesheet">
   </head>
   <body>
+    <div class="ribbon">
+      <a href="https://github.com/anmaso/k8s-editor"><img loading="lazy" height="32" src="https://cdn.glitch.com/80a8493d-689e-483d-8ae9-bc1956812b5a%2FGitHub-Mark-64px.png?v=1624432269571" alt="Fork me on GitHub" data-recalc-dims="1"></a>  
+      <a href="https://glitch.com/edit/#!/remix/your-project-name-here"><img alt="Remix on Glitch" src="https://cdn.gomix.com/f3620a78-0ad3-4f81-a271-c8a4faa20f86%2Fremix-button.svg"></a>
+    </div>
+    
     <div id="vue">
       
       
@@ -24,7 +30,7 @@
   <td></td>
 </tr>
 <tr>
-  <td width="300" class="line">Add optional sections by checking the boxes</td>
+  <td width="200px" class="">Add optional sections by checking the boxes</td>
   <td><pre id="deployment" class="deployment">
 apiVersion: apps/v1
 kind: Deployment
@@ -60,7 +66,7 @@ spec:<span v-if="section.replicas">
           
 </tr>
 <tr>
-  <td width="300" class="line"><input type="checkbox" v-model="section.imagePullSecrets"/>image Pull Secrets</td>
+  <td class="line"><input type="checkbox" v-model="section.imagePullSecrets"/>image Pull Secrets</td>
   <td><pre v-if="section.imagePullSecrets" class="deployment">      imagePullSecrets:
       - name: <input class="long" v-model="values.imagePullSecrets"/><span class="hidden">{{values.imagePullSecrets}}</span></pre>
   </td>

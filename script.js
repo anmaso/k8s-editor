@@ -77,6 +77,7 @@ const App = {
     const saveService = ()=> saveAs( blob(getText('service')), values.value.name+'-service.yaml');
     const saveKustomize = ()=> saveAs( blob(getText('kustomize')), 'kustomization.yaml');
     const saveConfig = ()=> saveAs( blob((getText('config'))), values.value.name+'-external-config.yaml');
+    const saveIngress = ()=> saveAs( blob((getText('ingress'))), values.value.name+'-ingress.yaml');
     
     const addEnvs = ()=> values.value.envs.push({name:'name', value:'value'})
     const removeEnvs = ()=> (values.value.envs.length>1) && values.value.envs.pop();
@@ -95,6 +96,7 @@ const App = {
       saveService,
       saveConfig,
       saveKustomize,
+      saveIngress,
      
       request_cpu_plus,
       request_cpu_minus,

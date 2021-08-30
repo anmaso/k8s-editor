@@ -18,7 +18,13 @@ window.SAMPLES = {
       targetPort: 8080,
       serviceType: 'ClusterIP',
       digest    : '',
-      configdata: ''
+      configdata: '',
+      ingressPath: '/nginx',
+      secret1   : 'secret1',
+      secretpath1: '/var/secrets/secret1',
+      secretfile1: 'secret1',
+      empty1    : 'emptydir1',
+      emptypath1: '~/.config'
     },
     section: {
       replicas  : false,
@@ -30,7 +36,10 @@ window.SAMPLES = {
       envs      : false,
       service   : false,
       kustomize : false,
-      config    : false
+      config    : false,
+      ingress   : false,
+      secret1   : false,
+      emtpy1    : false
     }
   },
   complete: {
@@ -52,7 +61,11 @@ window.SAMPLES = {
       targetPort: 8080,
       serviceType: 'ClusterIP',
       digest    : '',
-      configdata: ''
+      configdata: '',
+      ingressPath: '',
+      secret1   : 'secret1',
+      secretpath1: '/var/secrets/secret1',
+      secretfile1: 'secret1'
     },
     section: {
       replicas  : true,
@@ -64,7 +77,9 @@ window.SAMPLES = {
       envs      : true,
       service   : true,
       kustomize : true,
-      config    : true
+      config    : true,
+      ingress   : true,
+      secret1   : true
     }
   },
   nginx: {
@@ -95,7 +110,11 @@ window.SAMPLES = {
     location / {
         root   /usr/share/nginx/html;
     }
-}`
+}`,
+      ingressPath: '/nginx',
+      secret1   : 'secret1',
+      secretpath1: '/var/secrets/secret1',
+      secretfile1: 'secret1'
     },
     section: {
       replicas  : true,
@@ -107,7 +126,8 @@ window.SAMPLES = {
       envs      : false,
       service   : true,
       kustomize : false,
-      config    : true
+      config    : true,
+      ingress   : true
     }
   }
   

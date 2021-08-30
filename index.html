@@ -66,7 +66,12 @@
           
           
 </tr>
-
+<tr>
+  <td class="line"><input type="checkbox" v-model="section.imagePullSecrets"/>image Pull Secrets</td>
+  <td><pre v-if="section.imagePullSecrets" class="deployment">      imagePullSecrets:
+      - <span class="tag">name:</span> <input class="long" v-model="values.imagePullSecrets"/><span class="hidden">{{values.imagePullSecrets}}</span></pre>
+  </td>
+</tr>
           
 <tr>
   <td></td>
@@ -105,12 +110,7 @@
     
   </td>
 </tr>
-<tr>
-  <td class="line"><input type="checkbox" v-model="section.imagePullSecrets"/>image Pull Secrets</td>
-  <td><pre v-if="section.imagePullSecrets" class="deployment">      imagePullSecrets:
-      - <span class="tag">name:</span> <input class="long" v-model="values.imagePullSecrets"/><span class="hidden">{{values.imagePullSecrets}}</span></pre>
-  </td>
-</tr>
+
           
 <tr>
   <td class="line"><input type="checkbox" v-model="section.resources"/>resources </td>
@@ -127,19 +127,22 @@
 <tr>
   <td class="line">
     <input type="checkbox" v-model="section.volume1">volume mount<div v-if="section.volume1">
-    <input type="checkbox" v-model="section.secret">secret mount
+      <input type="checkbox" v-model="section.secret">secret mount</br>
+      <input type="checkbox" v-model="section.empty">emptyDir mount
     </div>
   </td>
   <td><pre v-if="section.volume1" class="deployment">        <span class="tag">volumeMounts:</span>
           - <b class="volume1 tag">name</b>: <input v-model="values.volume1"><span class="hidden">{{values.volume1}}</span>
             <span class="tag">mountPath:</span> <input class="long" v-model="values.path1"><span class="hidden">{{values.path1}}</span>
-            <span class="tag">subPath:</span> <input v-model="values.file1"><span class="hidden">{{values.file1}}</span><span v-if="section.secret">
+            <span class="tag">subPath:</span> <input v-model="values.file1"><span class="hidden">{{values.file1}}</span><span
+            v-if="section.secret">
           - <b class="secret1 tag">name</b>: <input v-model="values.secret1"><span class="hidden">{{values.secret1}}</span>
             <span class="tag">mountPath:</span> <input class="long" v-model="values.secretpath1"><span class="hidden">{{values.secretpath1}}</span>
-            <span class="tag">subPath:</span> <input v-model="values.secretfile1"><span class="hidden">{{values.secretfile1}}</span><span v-if="section.secret">
-
-            
-            </span></pre>
+            <span class="tag">subPath:</span> <input v-model="values.secretfile1"><span class="hidden">{{values.secretfile1}}</span></span><span
+            v-if="section.empty">
+          - <b class="empty1 tag">name</b>: <input v-model="values.empty1"><span class="hidden">{{values.empty1}}</span>
+            <span class="tag">mountPath:</span> <input class="long" v-model="values.emptypath1"><span class="hidden">{{values.emptypath1}}</span>
+            </pre>
   </td>
 </tr>
 <tr>
@@ -150,7 +153,9 @@
           <span class="tag">name:</span> <b class="name">{{values.name}}</b>-external-config<span v-if="section.secret">
       - <span class="tag">name:</span> <b class="secret1">{{values.secret1}}</b>
         <span class="tag">secret:</span>
-          <span class="tag">secretName:</span> <b class="name">{{values.name}}</b>-secret</span></pre></td>
+          <span class="tag">secretName:</span> <b class="name">{{values.name}}</b>-secret</span><span v-if="section.empty">
+      - <span class="tag">name:</span> <b class="secret1">{{values.empty1}}</b>
+        <span class="tag">emptyDir: {}</span></span></pre></td>
 </tr>
 <tr>
   <td class="line">

@@ -22,7 +22,9 @@ window.SAMPLES = {
       ingressPath: '/nginx',
       secret1   : 'secret1',
       secretpath1: '/var/secrets/secret1',
-      secretfile1: 'secret1'
+      secretfile1: 'secret1',
+      empty1    : 'emptydir1',
+      emptypath1: '~/.config'
     },
     section: {
       replicas  : false,
@@ -36,7 +38,8 @@ window.SAMPLES = {
       kustomize : false,
       config    : false,
       ingress   : false,
-      secret1   : false
+      secret1   : false,
+      emtpy1    : false
     }
   },
   complete: {

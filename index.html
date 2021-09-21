@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>k8s descriptor editor</title>
+    <title>Kubernetes descriptor editor</title>
         <link rel="stylesheet" href="style.css">
 
     <script src="https://unpkg.com/vue@next"></script>  
     <script src="/fileSaver.js"></script>
     <script src="/samples.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">    
   </head>
   <body>
     <div class="ribbon">
@@ -24,14 +25,20 @@
 <tr>
   <td></td>
   <td>
-    <h1><img src="https://cdn.glitch.com/80a8493d-689e-483d-8ae9-bc1956812b5a%2Fkubernetes_logo_icon.png?v=1624185071302" height="30" align="bottom"> k8s yaml editor</h1>
-              
-  </td>          
+    <h1><img src="https://cdn.glitch.com/80a8493d-689e-483d-8ae9-bc1956812b5a%2Fkubernetes_logo_icon.png?v=1624185071302" height="30" align="bottom"> Kubernetes descriptors editor</h1>
+          <p>
+            Simple utility page to write kubernetes descriptor files with ease.
+    </p>
+  </td>
+  <td></td>
   <td></td>
 </tr>
 <tr>
-  <td width="200px" class="">Add optional sections by checking the boxes</td>
-  <td><pre id="deployment" class="deployment">
+  <td width="200px" class="">
+    <span  v-if="showEditor">Add optional sections by checking the boxes</span>
+    <span v-else>Full content of descriptors</span>
+  </td>
+  <td v-if="showEditor" ><pre id="deployment" class="deployment">
 <span class="tag">apiVersion</span>: apps/v1
 <span class="tag">kind:</span> Deployment
 <span class="tag">metadata:</span>
@@ -47,19 +54,22 @@
         <span class="tag">app:</span> <b class="name">{{values.name}}</b>
     <span class="tag">spec:</span></pre>
   </td>
+  <td rowspan="20" v-if="!showEditor"><textarea class="fullDescriptor" v-model="fullDescriptor"></textarea></td>
   <td rowspan="10" class="actions" >
-    <a href="#" @click="copyDeployment">copy to clipboard</a><br/>
-    <a href="#" @click="saveDeployment">save deployment to {{values.name}}-deployment.yaml</a><br/>
-    <a href="#" @click="saveService" v-if="section.service">save service to {{values.name}}-service.yaml</a><br/>
-    <a href="#" @click="saveConfig" v-if="section.config">save config map to {{values.name}}-external-config.yaml</a><br/>
-    <a href="#" @click="saveKustomize" v-if="section.kustomize">save kustomization to kustomization.yaml</a><br/>
-    <a href="#" @click="saveIngress" v-if="section.ingress">save ingress to {{values.name}}-ingress.yaml</a><br/>
+    <a href="#" @click="toggleEditor" v-if="showEditor"><i class="fa fa-eye"></i> show descriptors</a><br/>
+    <a href="#" @click="toggleEditor" v-if="!showEditor"><i class="fa fa-edit"></i> show editor</a><br/>
+    <a href="#" @click="copyDeployment"><i class="fa fa-copy"></i> copy to clipboard</a><br/>
+    <a href="#" @click="saveDeployment"><i class="fa fa-download"></i> save deployment to<br/> {{values.name}}-deployment.yaml</a><br/>
+    <a href="#" @click="saveService" v-if="section.service"><i class="fa fa-download"></i> save service to {{values.name}}-service.yaml</a><br/>
+    <a href="#" @click="saveConfig" v-if="section.config"><i class="fa fa-download"></i> save config map to {{values.name}}-external-config.yaml</a><br/>
+    <a href="#" @click="saveKustomize" v-if="section.kustomize"><i class="fa fa-download"></i> save kustomization to kustomization.yaml</a><br/>
+    <a href="#" @click="saveIngress" v-if="section.ingress"><i class="fa fa-download"></i> save ingress to {{values.name}}-ingress.yaml</a><br/>
     <br/>
-    <a href="#" @click="save">save values to local storage</a><br/>
-    <a href="#" @click="clear">clear local storage</a><br/>
+    <a href="#" @click="save"><i class="fa fa-save"></i> save values to local storage</a><br/>
+    <a href="#" @click="clear"><i class="fa fa-trash"></i> clear local storage</a><br/>
     <br/>
-    <a href="#" @click="load('complete')">load complete example</a><br/>
-    <a href="#" @click="load('nginx')">load nginx sample</a><br/>
+    <a href="#" @click="load('complete')"><i class="fa fa-book"></i> load complete example</a><br/>
+    <a href="#" @click="load('nginx')"><i class="fa fa-book"></i> load nginx sample</a><br/>
     <br/>
     
   </td>
@@ -67,43 +77,43 @@
           
 </tr>
 <tr>
-  <td class="line"><input type="checkbox" v-model="section.imagePullSecrets"/>image Pull Secrets</td>
-  <td><pre v-if="section.imagePullSecrets" class="deployment">      imagePullSecrets:
+  <td v-if="showEditor" class="line"><input type="checkbox" v-model="section.imagePullSecrets"/>image Pull Secrets</td>
+  <td v-if="showEditor"><pre v-if="section.imagePullSecrets" class="deployment">      imagePullSecrets:
       - <span class="tag">name:</span> <input class="long" v-model="values.imagePullSecrets"/><span class="hidden">{{values.imagePullSecrets}}</span></pre>
   </td>
 </tr>
           
 <tr>
-  <td></td>
-  <td>
+  <td v-if="showEditor"></td>
+  <td v-if="showEditor">
     <pre class="deployment">      <span class="tag">containers:</span>
       - <span class="tag">name:</span> <b class="name">{{values.name}}</b>
         <span class="tag">image:</span> <input class="long" v-model="values.image"/><span class="hidden">{{values.image}}</span></pre>
   </td>
 </tr>
 <tr>
-  <td class="line">
+  <td v-if="showEditor" class="line">
     <input type="checkbox" v-model="section.ports"/>ports 
   </td>
-  <td>
+  <td v-if="showEditor">
     <pre class="deployment" v-if="section.ports">        <span class="tag">ports:</span>
         - <span class="tag">containerPort:</span> <input v-model="values.port"/><span class="hidden">{{values.port}}</span></pre>
   </td>
 </tr>
 <tr>
-  <td class="line">
+  <td v-if="showEditor" class="line">
     <input type="checkbox" v-model="section.cmd"/>cmd / args 
   </td>
-  <td><pre v-if="section.cmd" class="deployment">        <span class="tag">command:</span> [<input class="long" v-model="values.cmd"><span class="hidden">{{values.cmd}}</span>]
+  <td v-if="showEditor"><pre v-if="section.cmd" class="deployment">        <span class="tag">command:</span> [<input class="long" v-model="values.cmd"><span class="hidden">{{values.cmd}}</span>]
         <span class="tag">args:</span> [<input class="long" v-model="values.args"><span class="hidden">{{values.args}}</span>]</pre>
   </td>
 </tr>
 <tr>
-  <td class="line">
+  <td v-if="showEditor" class="line">
     <input type="checkbox" v-model="section.envs"/>env vars<br/>
     
   </td>
-  <td><pre v-if="section.envs" class="deployment">        <span class="tag">env:</span> 
+  <td v-if="showEditor"><pre v-if="section.envs" class="deployment">        <span class="tag">env:</span> 
         <span v-for="env in values.envs">- <span class="tag">name:</span> <input v-model="env.name"><span class="hidden">{{env.name}}</span>
           <span class="tag">value:</span> <input v-model="env.value"><button class="small" @click="removeEnvs">-</button><button class="small" @click="addEnvs">+</button><span class="hidden">{{env.value}}</span>
         </span></pre>
@@ -113,8 +123,8 @@
 
           
 <tr>
-  <td class="line"><input type="checkbox" v-model="section.resources"/>resources </td>
-  <td><pre id="deployment2" v-if="section.resources" class="deployment">
+  <td v-if="showEditor" class="line"><input type="checkbox" v-model="section.resources"/>resources </td>
+  <td v-if="showEditor"><pre id="deployment2" v-if="section.resources" class="deployment">
         <span class="tag">resources:</span>
           <span class="tag">requests:</span>
             <span class="tag">memory:</span> "<input v-model="values.request.ram"/><button class="small" @click="request_ram_minus">-</button><button class="small" @click="request_ram_plus">+</button><span class="hidden">{{values.request.ram}}</span>"
@@ -125,13 +135,13 @@
   </td>
 </tr>
 <tr>
-  <td class="line">
+  <td v-if="showEditor" class="line">
     <input type="checkbox" v-model="section.volume1">volume mount<div v-if="section.volume1">
       <input type="checkbox" v-model="section.secret">secret mount</br>
       <input type="checkbox" v-model="section.empty">emptyDir mount
     </div>
   </td>
-  <td><pre v-if="section.volume1" class="deployment">        <span class="tag">volumeMounts:</span>
+  <td v-if="showEditor"><pre v-if="section.volume1" class="deployment">        <span class="tag">volumeMounts:</span>
           - <b class="volume1 tag">name</b>: <input v-model="values.volume1"><span class="hidden">{{values.volume1}}</span>
             <span class="tag">mountPath:</span> <input class="long" v-model="values.path1"><span class="hidden">{{values.path1}}</span>
             <span class="tag">subPath:</span> <input v-model="values.file1"><span class="hidden">{{values.file1}}</span><span
@@ -146,8 +156,8 @@
   </td>
 </tr>
 <tr>
-  <td></td>
-  <td><pre v-if="section.volume1" class="deployment">      <span class="tag">volumes:</span>
+  <td v-if="showEditor"></td>
+  <td v-if="showEditor"><pre v-if="section.volume1" class="deployment">      <span class="tag">volumes:</span>
       - <span class="tag">name:</span> <b class="volume1">{{values.volume1}}</b>
         <span class="tag">configMap:</span>
           <span class="tag">name:</span> <b class="name">{{values.name}}</b>-external-config<span v-if="section.secret">
@@ -158,10 +168,10 @@
         <span class="tag">emptyDir: {}</span></span></pre></td>
 </tr>
 <tr>
-  <td class="line">
+  <td v-if="showEditor" class="line">
     <input type="checkbox" v-model="section.config">config map
   </td>
-  <td><pre v-if="section.config" class="config">
+  <td v-if="showEditor"><pre v-if="section.config" class="config">
 ---
 <span class="tag">apiVersion:</span> v1
 <span class="tag">kind:</span> ConfigMap
@@ -174,8 +184,8 @@
 </tr>
 
 <tr>  
-  <td class="line"><input type="checkbox" v-model="section.service">service</td>
-  <td><pre v-if="section.service" class="service">
+  <td v-if="showEditor" class="line"><input type="checkbox" v-model="section.service">service</td>
+  <td v-if="showEditor"><pre v-if="section.service" class="service">
 ---
 <span class="tag">apiVersion:</span> v1
 <span class="tag">kind:</span> Service
@@ -194,8 +204,8 @@
   </td>
 </tr>
 <tr>
-  <td class="line"><input type="checkbox" v-model="section.ingress">ingress</td>
-  <td><pre v-if="section.ingress" class="kustomize">
+  <td v-if="showEditor" class="line"><input type="checkbox" v-model="section.ingress">ingress</td>
+  <td v-if="showEditor"><pre v-if="section.ingress" class="kustomize">
 ---          
 <span class="tag">apiVersion:</span> networking.k8s.io/v1
 <span class="tag">kind:</span> Ingress
@@ -218,8 +228,8 @@
   </td>
 </tr>  
 <tr>
-  <td class="line"><input type="checkbox" v-model="section.kustomize">kustomize</td>
-  <td><pre v-if="section.kustomize" class="kustomize">
+  <td v-if="showEditor" class="line"><input type="checkbox" v-model="section.kustomize">kustomize</td>
+  <td v-if="showEditor"><pre v-if="section.kustomize" class="kustomize">
 ---
 <span class="tag">resources:</span>
 - <b class="name">{{values.name}}</b>-deployment.yaml

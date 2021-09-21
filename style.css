@@ -91,15 +91,31 @@ tdx {
 
 .actions {
   v-align:top;
-  padding:1rem;
+  padding-left:1rem;
 }
 
 .actions a {
   padding-top: 10px;
   display: inline-block;
-  color: #326ce5;
-  border-bottom: 1px dotted #326ce5;
+  color: #444;
+  /* border-bottom: 1px dotted #326ce5; 
+  border: 1px solid #326ce5;
+  */
   text-decoration: none;
+  background: #f4f4f4;
+  border-radius: 3px;
+  padding: .5rem;
+  margin-bottom: .3rem;
+  width: 12rem;
+  
+}
+
+.actions a:hover {
+  background: #e4e4e4;
+}
+
+.actions a .fa {
+  color: #326ce5;
 }
 
 .config textarea {
@@ -114,4 +130,13 @@ tdx {
 
 .tag{
   color: #4f7ede;
+}
+
+.fullDescriptor {
+  width: 100%;
+  font-family: "Ubuntu mono", monospace;
+  height: 800px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  padding: 5px;
 }

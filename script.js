@@ -89,8 +89,18 @@ const App = {
     
     const load = (name)=>document.location=document.location.origin+'?load='+name;
     
+    const showEditor = Vue.ref(true);
+    const fullDescriptor = Vue.ref("");
+    const toggleEditor = ()=> {
+      showEditor.value = !showEditor.value;
+      fullDescriptor.value = getText();
+    }
+    
+    
     return {
-
+      toggleEditor,
+      fullDescriptor,
+      showEditor,
       copyDeployment,
       saveDeployment,
       saveService,

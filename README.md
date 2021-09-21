@@ -6,7 +6,3 @@ Even when starting with vscode you have to remember what fields to add.
 This simple helper may get you on speed with minimal fuss for your simple descriptors
 
 enjoy
-
-TODO
-- fix image pull secrets place
-- add volume emptydir

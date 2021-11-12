@@ -10,9 +10,16 @@
         document.body.removeChild(el);
       };
 
+const CLIP="https://myclip.glitch.me/";
+
 const id = (id)=>document.getElementById(id);
 const getPres = (cls)=> (cls ? Array.from(document.getElementsByClassName(cls)) : Array.from(document.getElementsByTagName('pre')));
 const getText = (cls)=> getPres(cls).reduce( (acc,el)=>acc+el.innerText+'\n', "").replaceAll('-+','')
+
+
+
+
+
 
 const App = {
   
@@ -68,11 +75,9 @@ const App = {
     const prefixLines = (str)=> str?str.split('\n').map(l=>'    '+l).join('\n'):'';
     
     const computedConfig = Vue.computed(()=> prefixLines(values.value.configdata));
-    
-    
+        
     const computedName = Vue.computed(()=> values.value.name+'xxxx');
-    
-    
+        
     const saveDeployment = ()=> saveAs( blob(getText('deployment')), values.value.name+'-deployment.yaml');
     const saveService = ()=> saveAs( blob(getText('service')), values.value.name+'-service.yaml');
     const saveKustomize = ()=> saveAs( blob(getText('kustomize')), 'kustomization.yaml');
@@ -90,11 +95,42 @@ const App = {
     const load = (name)=>document.location=document.location.origin+'?load='+name;
     
     const showEditor = Vue.ref(true);
-    const fullDescriptor = Vue.ref("");
+    const fullDescriptor = Vue.ref("??");
     const toggleEditor = ()=> {
       showEditor.value = !showEditor.value;
       fullDescriptor.value = getText();
     }
+    
+    const clip = Vue.ref("");
+    const clipDeployment = ()=> {
+      var chars= ['|','/','-','\\','|','-'];
+      var tmo=setInterval(()=>{
+        chars.push( chars.shift());
+        clip.value=chars[0];
+      },200)
+      const txt = getText();
+      fetch(CLIP,{
+        method: 'post',
+        mode: 'cors',
+        body: txt,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      }).then(r=>r.text()).then(t=>{
+        try{
+          var url=t.split('\n').filter(s=>s.indexOf('myclip')>0)[0].replace(/[^/]*\//g,'');
+          copyToClipboard(CLIP+url)
+          clearInterval(tmo);
+          clip.value=url;
+        }catch(e){
+          clip.value='??err'
+        }
+      }).finally(()=>{
+        clearInterval(tmo);
+      })
+    }
+    
+    const copyKubectl = ()=> copyToClipboard("curl "+CLIP+clip.value+ " | kubectl apply -f -")
     
     
     return {
@@ -102,6 +138,11 @@ const App = {
       fullDescriptor,
       showEditor,
       copyDeployment,
+      
+      clip,
+      clipDeployment,
+      copyKubectl,
+      
       saveDeployment,
       saveService,
       saveConfig,

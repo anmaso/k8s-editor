@@ -10,6 +10,7 @@ window.SAMPLES = {
       limit     : {cpu:'1000m', ram:'256Mi'},
       volume1   : 'volume1',
       config1   : 'config1',
+      subpath   : false,
       path1     : '/etc/nginx/conf.d/default.conf',
       file1     : 'default.conf',
       cmd       : '"/bin/bash", "-c", "--"',

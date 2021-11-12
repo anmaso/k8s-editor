@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -36,7 +37,7 @@
 <tr>
   <td width="200px" class="">
     <span  v-if="showEditor">Add optional sections by checking the boxes</span>
-    <span v-else>Full content of descriptors</span>
+    <span v-else>Here you can edit the descriptors freely, but note that changes will be lost if you switch back to the editor. </span>
   </td>
   <td v-if="showEditor" ><pre id="deployment" class="deployment">
 <span class="tag">apiVersion</span>: apps/v1
@@ -54,30 +55,35 @@
         <span class="tag">app:</span> <b class="name">{{values.name}}</b>
     <span class="tag">spec:</span></pre>
   </td>
-  <td rowspan="20" v-if="!showEditor"><textarea class="fullDescriptor" v-model="fullDescriptor"></textarea></td>
+  <td rowspan="20" v-if="!showEditor" class="fullDescriptorWrap"><textarea class="fullDescriptor" v-model="fullDescriptor"></textarea></td>
   <td rowspan="10" class="actions" >
-    <a href="#" @click="toggleEditor" v-if="showEditor"><i class="fa fa-eye"></i> show descriptors</a><br/>
-    <a href="#" @click="toggleEditor" v-if="!showEditor"><i class="fa fa-edit"></i> show editor</a><br/>
+    <span  v-if="showEditor"><a href="#" @click="toggleEditor"><i class="fa fa-edit"></i> edit YAML</a><br/></span>
+    <span  v-if="!showEditor"><a href="#" @click="toggleEditor"><i class="fa fa-tools"></i> show editor</a><br/></span>
     <a href="#" @click="copyDeployment"><i class="fa fa-copy"></i> copy to clipboard</a><br/>
-    <a href="#" @click="saveDeployment"><i class="fa fa-download"></i> save deployment to<br/> {{values.name}}-deployment.yaml</a><br/>
-    <a href="#" @click="saveService" v-if="section.service"><i class="fa fa-download"></i> save service to {{values.name}}-service.yaml</a><br/>
-    <a href="#" @click="saveConfig" v-if="section.config"><i class="fa fa-download"></i> save config map to {{values.name}}-external-config.yaml</a><br/>
-    <a href="#" @click="saveKustomize" v-if="section.kustomize"><i class="fa fa-download"></i> save kustomization to kustomization.yaml</a><br/>
-    <a href="#" @click="saveIngress" v-if="section.ingress"><i class="fa fa-download"></i> save ingress to {{values.name}}-ingress.yaml</a><br/>
-    <br/>
-    <a href="#" @click="save"><i class="fa fa-save"></i> save values to local storage</a><br/>
-    <a href="#" @click="clear"><i class="fa fa-trash"></i> clear local storage</a><br/>
-    <br/>
-    <a href="#" @click="load('complete')"><i class="fa fa-book"></i> load complete example</a><br/>
-    <a href="#" @click="load('nginx')"><i class="fa fa-book"></i> load nginx sample</a><br/>
-    <br/>
-    
+    <a href="#" @click="clipDeployment"><i class="fa fa-upload"></i><img width="20" v-if="clipSaving" src="https://cdn.glitch.me/80a8493d-689e-483d-8ae9-bc1956812b5a%2Floading.gif?v=1636707275003"/> <span class="smalltext">upload to https://myclip.glitch.me/{{clip}} </span></a><br/>
+    <a v-if="clip" href="#" @click="copyKubectl" class="smalltext"><i class="fa fa-copy"></i> curl https://myclip.glitch.me/{{clip}} | kubectl apply -f -</a><br/>
+
+
+    <span  v-if="showEditor">
+      <a href="#" @click="saveDeployment"><i class="fa fa-download"></i> save deployment to<br/> {{values.name}}-deployment.yaml</a><br/>
+      <a href="#" @click="saveService" v-if="section.service"><i class="fa fa-download"></i> save service to {{values.name}}-service.yaml</a><br/>
+      <a href="#" @click="saveConfig" v-if="section.config"><i class="fa fa-download"></i> save config map to {{values.name}}-external-config.yaml</a><br/>
+      <a href="#" @click="saveKustomize" v-if="section.kustomize"><i class="fa fa-download"></i> save kustomization to kustomization.yaml</a><br/>
+      <a href="#" @click="saveIngress" v-if="section.ingress"><i class="fa fa-download"></i> save ingress to {{values.name}}-ingress.yaml</a><br/>
+      <br/>
+      <a href="#" @click="save"><i class="fa fa-save"></i> save values to local storage</a><br/>
+      <a href="#" @click="clear"><i class="fa fa-trash"></i> clear local storage</a><br/>
+      <br/>
+      <a href="#" @click="load('complete')"><i class="fa fa-book"></i> load complete example</a><br/>
+      <a href="#" @click="load('nginx')"><i class="fa fa-book"></i> load nginx sample</a><br/>
+      <br/>
+    </span>
   </td>
           
           
 </tr>
 <tr>
-  <td v-if="showEditor" class="line"><input type="checkbox" v-model="section.imagePullSecrets"/>image Pull Secrets</td>
+  <td v-if="showEditor" class="line"><input id="ips" type="checkbox" v-model="section.imagePullSecrets"/><label for="ips">image Pull Secrets</label></td>
   <td v-if="showEditor"><pre v-if="section.imagePullSecrets" class="deployment">      imagePullSecrets:
       - <span class="tag">name:</span> <input class="long" v-model="values.imagePullSecrets"/><span class="hidden">{{values.imagePullSecrets}}</span></pre>
   </td>
@@ -93,7 +99,7 @@
 </tr>
 <tr>
   <td v-if="showEditor" class="line">
-    <input type="checkbox" v-model="section.ports"/>ports 
+	  <input id="ports" type="checkbox" v-model="section.ports"/><label for="ports">ports<label>
   </td>
   <td v-if="showEditor">
     <pre class="deployment" v-if="section.ports">        <span class="tag">ports:</span>
@@ -102,7 +108,7 @@
 </tr>
 <tr>
   <td v-if="showEditor" class="line">
-    <input type="checkbox" v-model="section.cmd"/>cmd / args 
+	  <input id="cmd" type="checkbox" v-model="section.cmd"/><label for="cmd">cmd / args</label> 
   </td>
   <td v-if="showEditor"><pre v-if="section.cmd" class="deployment">        <span class="tag">command:</span> [<input class="long" v-model="values.cmd"><span class="hidden">{{values.cmd}}</span>]
         <span class="tag">args:</span> [<input class="long" v-model="values.args"><span class="hidden">{{values.args}}</span>]</pre>
@@ -110,7 +116,7 @@
 </tr>
 <tr>
   <td v-if="showEditor" class="line">
-    <input type="checkbox" v-model="section.envs"/>env vars<br/>
+    <input id="envs" type="checkbox" v-model="section.envs"/><label for="envs">env vars<br/></label>
     
   </td>
   <td v-if="showEditor"><pre v-if="section.envs" class="deployment">        <span class="tag">env:</span> 
@@ -123,7 +129,7 @@
 
           
 <tr>
-  <td v-if="showEditor" class="line"><input type="checkbox" v-model="section.resources"/>resources </td>
+  <td v-if="showEditor" class="line"><input id="reso" type="checkbox" v-model="section.resources"/><label for="reso">resources</label> </td>
   <td v-if="showEditor"><pre id="deployment2" v-if="section.resources" class="deployment">
         <span class="tag">resources:</span>
           <span class="tag">requests:</span>
@@ -134,17 +140,18 @@
             <span class="tag">cpu:</span> "<input v-model="values.limit.cpu"/><button class="small" @click="limit_cpu_minus">-</button><button class="small" @click="limit_cpu_plus">+</button><span class="hidden">{{values.limit.cpu}}</span>"</pre>
   </td>
 </tr>
-<tr>
+<tr><!-- VOLUME SECTION -->
   <td v-if="showEditor" class="line">
-    <input type="checkbox" v-model="section.volume1">volume mount<div v-if="section.volume1">
-      <input type="checkbox" v-model="section.secret">secret mount</br>
-      <input type="checkbox" v-model="section.empty">emptyDir mount
+    <input id="v1" type="checkbox" v-model="section.volume1"><label for="v1">volume mount</label><div v-if="section.volume1">
+      <input id="secret"  class="padded" type="checkbox" v-model="section.secret"><label for="secret">secret mount</label><br/>
+    <input id="empty"   class="padded" type="checkbox" v-model="section.empty"><label for="empty">emptyDir mount</label><br/>
+      <input id="subpath" class="padded" type="checkbox" v-model="section.subpath"><label for="subpath">subpath</label>
     </div>
   </td>
   <td v-if="showEditor"><pre v-if="section.volume1" class="deployment">        <span class="tag">volumeMounts:</span>
           - <b class="volume1 tag">name</b>: <input v-model="values.volume1"><span class="hidden">{{values.volume1}}</span>
             <span class="tag">mountPath:</span> <input class="long" v-model="values.path1"><span class="hidden">{{values.path1}}</span>
-            <span class="tag">subPath:</span> <input v-model="values.file1"><span class="hidden">{{values.file1}}</span><span
+            <span v-if="section.subpath"><span class="tag">subPath:</span> <input v-model="values.file1"><span class="hidden">{{values.file1}}</span></span><span
             v-if="section.secret">
           - <b class="secret1 tag">name</b>: <input v-model="values.secret1"><span class="hidden">{{values.secret1}}</span>
             <span class="tag">mountPath:</span> <input class="long" v-model="values.secretpath1"><span class="hidden">{{values.secretpath1}}</span>
@@ -169,7 +176,7 @@
 </tr>
 <tr>
   <td v-if="showEditor" class="line">
-    <input type="checkbox" v-model="section.config">config map
+    <input id="config" type="checkbox" v-model="section.config"><label for="config">config map</label>
   </td>
   <td v-if="showEditor"><pre v-if="section.config" class="config">
 ---
@@ -179,12 +186,12 @@
   <span class="tag">name:</span> {{values.name}}-external-config
 <span class="tag">data:</span>
   {{values.file1}}: |
-<textarea v-model="values.configdata" cols="50" rows="10"></textarea><span class="hidden" pre-line>{{computedConfig}}</span></pre>
+<textarea v-model="values.configdata"  rows="10"></textarea><span class="hidden" pre-line>{{computedConfig}}</span></pre>
   </td>
 </tr>
 
 <tr>  
-  <td v-if="showEditor" class="line"><input type="checkbox" v-model="section.service">service</td>
+  <td v-if="showEditor" class="line"><input id="service" type="checkbox" v-model="section.service"><label for="service">service</label></td>
   <td v-if="showEditor"><pre v-if="section.service" class="service">
 ---
 <span class="tag">apiVersion:</span> v1
@@ -204,7 +211,7 @@
   </td>
 </tr>
 <tr>
-  <td v-if="showEditor" class="line"><input type="checkbox" v-model="section.ingress">ingress</td>
+  <td v-if="showEditor" class="line"><input id="ingress" type="checkbox" v-model="section.ingress"><label for="ingress">ingress</label></td>
   <td v-if="showEditor"><pre v-if="section.ingress" class="kustomize">
 ---          
 <span class="tag">apiVersion:</span> networking.k8s.io/v1
@@ -228,7 +235,7 @@
   </td>
 </tr>  
 <tr>
-  <td v-if="showEditor" class="line"><input type="checkbox" v-model="section.kustomize">kustomize</td>
+  <td v-if="showEditor" class="line"><input id="kustomize" type="checkbox" v-model="section.kustomize"><label for="kustomize">kustomize</label></td>
   <td v-if="showEditor"><pre v-if="section.kustomize" class="kustomize">
 ---
 <span class="tag">resources:</span>
@@ -252,5 +259,7 @@
       
     </div>
   </body>
-  <script src="/script.js"></script>  
+  <script src="/script.js"></script> 
+
 </html>
+

@@ -119,7 +119,7 @@ tdx {
 }
 
 .config textarea {
-  margin-left: 3rem;
+  margin-left: 3remx;
 }
 
 .ribbon {
@@ -132,11 +132,24 @@ tdx {
   color: #4f7ede;
 }
 
+.fullDescriptorWrap {
+  padding: 1rem;
+}
 .fullDescriptor {
   width: 100%;
   font-family: "Ubuntu mono", monospace;
-  height: 800px;
+  height: 600px;
   font-size: 1rem;
-  border: 1px solid #ddd;
-  padding: 5px;
+  /*border: 1px solid #ddd;*/
+  border: none;
+  background: transparent;
+  
+}
+
+.padded {
+  margin-left: 1rem;
+}
+
+.smalltext {
+  font-size: .8rem;
 }

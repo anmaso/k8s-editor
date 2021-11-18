@@ -1,15 +1,28 @@
 
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <title>Kubernetes descriptor editor</title>
-        <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="https://cdn.glitch.me/80a8493d-689e-483d-8ae9-bc1956812b5a%2Fk8s-editor.png?v=1637011899533">
 
-    <script src="https://unpkg.com/vue@next"></script>  
-    <script src="/fileSaver.js"></script>
-    <script src="/samples.js"></script>
+
+
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">    
+
+    
+    <script src="https://unpkg.com/vue@next"></script>  
+
+      <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />
+  <script src="//unpkg.com/element-plus"></script>
+
+    
+    
+    <script src="/fileSaver.js"></script>
+    <script src="/samples.js"></script>
   </head>
   <body>
     <div class="ribbon">
@@ -18,15 +31,13 @@
     </div>
     
     <div id="vue">
-      
-      
-      
-        
-        <table cellspacing="0">
+
+       
+<table cellspacing="0">
 <tr>
   <td></td>
   <td>
-    <h1><img src="https://cdn.glitch.com/80a8493d-689e-483d-8ae9-bc1956812b5a%2Fkubernetes_logo_icon.png?v=1624185071302" height="30" align="bottom"> Kubernetes descriptors editor</h1>
+    <h1><img src="https://cdn.glitch.me/80a8493d-689e-483d-8ae9-bc1956812b5a%2Fk8s-editor.png?v=1637011899533" height="30" align="bottom"> Kubernetes yaml editor</h1>
           <p>
             Simple utility page to write kubernetes descriptor files with ease.
     </p>
@@ -40,20 +51,20 @@
     <span v-else>Here you can edit the descriptors freely, but note that changes will be lost if you switch back to the editor. </span>
   </td>
   <td v-if="showEditor" ><pre id="deployment" class="deployment">
-<span class="tag">apiVersion</span>: apps/v1
-<span class="tag">kind:</span> Deployment
-<span class="tag">metadata:</span>
-  <span class="tag name">name</span>: <input v-model="values.name" /><span class="hidden">{{values.name}}</span>
-<span class="tag">spec:</span><span v-if="section.replicas">
-  <span class="tag">replicas:</span> <input v-model="values.replicas"/><span class="hidden">{{values.replicas}}</span></span>
-  <span class="tag">selector:</span>
-    <span class="tag">matchLabels:</span>
-      <span class="tag">app:</span> <b class="name">{{values.name}}</b>
-  <span class="tag">template:</span>
-    <span class="tag">metadata:</span>
-      <span class="tag">labels:</span>
-        <span class="tag">app:</span> <b class="name">{{values.name}}</b>
-    <span class="tag">spec:</span></pre>
+<i>apiVersion</i>: apps/v1
+<i>kind:</i> Deployment
+<i>metadata:</i>
+  <i>name</i>: <input v-model="values.name" /><span class="hidden">{{values.name}}</span>
+<i>spec:</i>
+  <i>replicas:</i> <input v-model="values.replicas"/><button class="small" @click="removeReplicas">-</button><button class="small" @click="addReplicas">+</button><span class="hidden">{{values.replicas}}</span>
+  <i>selector:</i>
+    <i>matchLabels:<i>
+      <i>app:</i> <b class="name">{{values.name}}</b>
+  <i>template:</i>
+    <i>metadata:</i>
+      <i>labels:</i>
+        <i>app:</i> <b class="name">{{values.name}}</b>
+    <i>spec:</i></pre>
   </td>
   <td rowspan="20" v-if="!showEditor" class="fullDescriptorWrap"><textarea class="fullDescriptor" v-model="fullDescriptor"></textarea></td>
   <td rowspan="10" class="actions" >
@@ -82,174 +93,312 @@
           
           
 </tr>
+<!-- image pull secret -->
 <tr>
-  <td v-if="showEditor" class="line"><input id="ips" type="checkbox" v-model="section.imagePullSecrets"/><label for="ips">image Pull Secrets</label></td>
+  <td v-if="showEditor" class="line">
+     <el-popover placement="top-start" :width="400" trigger="hover"
+      title="Image Pull Secrets"
+      content="If you are using images from a private container registry, you need to provide the pod with a 'kubernetes docker type' secret in order to be able to pull images.">
+      <template #reference>
+      <el-checkbox id="ips" v-model="section.imagePullSecrets"/>image Pull Secrets</el-checkbox>
+    </template>
+    </el-popover>
+    
+    </td>
   <td v-if="showEditor"><pre v-if="section.imagePullSecrets" class="deployment">      imagePullSecrets:
-      - <span class="tag">name:</span> <input class="long" v-model="values.imagePullSecrets"/><span class="hidden">{{values.imagePullSecrets}}</span></pre>
+      - <i>name:</i> <input class="long" v-model="values.imagePullSecrets"/><span class="hidden">{{values.imagePullSecrets}}</span></pre>
   </td>
 </tr>
           
 <tr>
   <td v-if="showEditor"></td>
   <td v-if="showEditor">
-    <pre class="deployment">      <span class="tag">containers:</span>
-      - <span class="tag">name:</span> <b class="name">{{values.name}}</b>
-        <span class="tag">image:</span> <input class="long" v-model="values.image"/><span class="hidden">{{values.image}}</span></pre>
+    <pre class="deployment">      <i>containers:</i>
+      - <i>name:</i> <b class="name">{{values.name}}</b>
+        <i>image:</i> <input class="long" v-model="values.image"/><span class="hidden">{{values.image}}</span></pre>
   </td>
 </tr>
+<!-- PROBES -->
 <tr>
   <td v-if="showEditor" class="line">
-	  <input id="ports" type="checkbox" v-model="section.ports"/><label for="ports">ports<label>
+    <el-popover placement="top-start" :width="400" trigger="hover"
+      title="Probes"
+      content="Define probes to check if app is live (if not, pod will be deleted) and ready (if not pod will be remove from service load balancing)">
+      <template #reference>
+        <el-checkbox id="probes" v-model="section.probes">probes</el-checkbox>
+      </template>
+    </el-popover>
   </td>
   <td v-if="showEditor">
-    <pre class="deployment" v-if="section.ports">        <span class="tag">ports:</span>
-        - <span class="tag">containerPort:</span> <input v-model="values.port"/><span class="hidden">{{values.port}}</span></pre>
+    <pre class="deployment" v-if="section.probes">
+        <i>livenessProbe:</i>
+          <i>httpGet:</i>
+            <i>path: /</i>
+            <i>port:</i> <input v-model="values.port"/><span class="hidden">{{values.port}}</span>
+          <i>initialDelaySeconds:</i> 10
+          <i>periodSeconds:</i> 10
+        <i>readinessProbe:</i>
+          <i>httpGet:</i>
+            <i>path: /</i>
+            <i>port:</i> <input v-model="values.port"/><span class="hidden">{{values.port}}</span>
+          <i>initialDelaySeconds:</i> 10
+          <i>periodSeconds:</i> 10
+          </pre>
   </td>
-</tr>
+</tr>  
+<!-- PORTS -->
 <tr>
   <td v-if="showEditor" class="line">
-	  <input id="cmd" type="checkbox" v-model="section.cmd"/><label for="cmd">cmd / args</label> 
+    <el-popover placement="top-start" :width="400" trigger="hover"
+      title="Ports"
+      content="This section is not mandatory, it provides info on ports open on this pod for other tools to instrospect it.">
+      <template #reference>
+        <el-checkbox id="ports" v-model="section.ports">ports</el-checkbox>
+      </template>
+    </el-popover>
   </td>
-  <td v-if="showEditor"><pre v-if="section.cmd" class="deployment">        <span class="tag">command:</span> [<input class="long" v-model="values.cmd"><span class="hidden">{{values.cmd}}</span>]
-        <span class="tag">args:</span> [<input class="long" v-model="values.args"><span class="hidden">{{values.args}}</span>]</pre>
+  <td v-if="showEditor">
+    <pre class="deployment" v-if="section.ports">        <i>ports:</i>
+        - <i>containerPort:</i> <input v-model="values.port"/><span class="hidden">{{values.port}}</span></pre>
   </td>
 </tr>
+<!-- CMD / ARGS -->
 <tr>
   <td v-if="showEditor" class="line">
-    <input id="envs" type="checkbox" v-model="section.envs"/><label for="envs">env vars<br/></label>
+    <el-popover placement="top-start" :width="400" trigger="hover"
+      title="CMD / ARGS">
+      <template #reference>
+	      <el-checkbox id="cmd" v-model="section.cmd"/>cmd / args</el-checkbox> 
+      </template>
+    <p>
+      Change the initial start command of the container.<br/>
+      The provided command will start the container with a bash shell (useful for debugging purposes)
+    </p>
+    </el-popover>
     
   </td>
-  <td v-if="showEditor"><pre v-if="section.envs" class="deployment">        <span class="tag">env:</span> 
-        <span v-for="env in values.envs">- <span class="tag">name:</span> <input v-model="env.name"><span class="hidden">{{env.name}}</span>
-          <span class="tag">value:</span> <input v-model="env.value"><button class="small" @click="removeEnvs">-</button><button class="small" @click="addEnvs">+</button><span class="hidden">{{env.value}}</span>
-        </span></pre>
+  <td v-if="showEditor"><pre v-if="section.cmd" class="deployment">        <i>command:</i> [<input class="long" v-model="values.cmd"><span class="hidden">{{values.cmd}}</span>]
+        <i>args:</i> [<input class="long" v-model="values.args"><span class="hidden">{{values.args}}</span>]</pre>
+  </td>
+</tr>
+<!-- ENV -->
+<tr>
+  <td v-if="showEditor" class="line">
+     <el-popover placement="top-start" :width="400" trigger="hover"
+      title="ENV">
+      <template #reference>
+        <el-checkbox id="envs" v-model="section.envs"/>env vars<br/></el-checkbox>
+       </template>
+      <p>Define environment variables for the container</p>
+      <p>You can add/remove variables using the +/- buttons</p>
+      </el-popover>
+      <el-popover  v-if="section.envs" placement="top-start" :width="400" trigger="hover"
+      title="env from configmap">
+      <template #reference>
+        <el-checkbox class="padded" v-model="section.envconfig">from configmap</el-checkbox>
+      </template>
+        <p>
+          Creates environment variables from key/values on a 
+        </p>
+    </el-popover>
+      <el-checkbox v-if="section.envs" class="padded" v-model="section.envsecret">from secret</el-checkbox>
+  </td>
+  <td v-if="showEditor"><pre v-if="section.envs" class="deployment">        <i>env:</i> 
+        <span v-for="env in values.envs">- <i>name:</i> <input v-model="env.name"><span class="hidden">{{env.name}}</span>
+          <i>value:</i> <input v-model="env.value"><button class="small" @click="removeEnvs">-</button><button class="small" @click="addEnvs">+</button><span class="hidden">{{env.value}}</span>
+        </span><span v-if="section.envconfig||section.envsecret"><i>envFrom:</i><span v-if="section.envconfig">
+        - <i>configMapRef:</i>
+            <i>name:</i> {{values.volume1}}</span><span v-if="section.envsecret">
+        - <i>secretRef:</i>
+            <i>name:</i> {{values.volume1}}</span></span></pre>
     
   </td>
 </tr>
 
-          
+<!-- RESOURCES -->          
 <tr>
-  <td v-if="showEditor" class="line"><input id="reso" type="checkbox" v-model="section.resources"/><label for="reso">resources</label> </td>
+  <td v-if="showEditor" class="line">
+    <el-popover placement="top-start" :width="400" trigger="hover"
+      title="Container resources">
+      <template #reference>
+        <el-checkbox id="reso" v-model="section.resources"/>resources</el-checkbox> 
+      </template>
+      <p>Define the minimum and maximum expected resources to be used by the application</p>
+      <p>Use the +/- buttons to toggle between predefined values</p>
+      <ul>
+        <li>cpu: 100m, 200m, 500m, 1000m</li>
+        <li>memory: 128Mb, 256Mb, 512Mb 1024Mb</li>
+    </ul>
+      
+    </p>
+    </el-popover>
+  </td>
   <td v-if="showEditor"><pre id="deployment2" v-if="section.resources" class="deployment">
-        <span class="tag">resources:</span>
-          <span class="tag">requests:</span>
-            <span class="tag">memory:</span> "<input v-model="values.request.ram"/><button class="small" @click="request_ram_minus">-</button><button class="small" @click="request_ram_plus">+</button><span class="hidden">{{values.request.ram}}</span>"
-            <span class="tag">cpu:</span> "<input v-model="values.request.cpu"/><button class="small" @click="request_cpu_minus">-</button><button class="small" @click="request_cpu_plus">+</button><span class="hidden">{{values.request.cpu}}</span>"
-          <span class="tag">limits:</span>
-            <span class="tag">memory:</span> "<input v-model="values.limit.ram"/><button class="small" @click="limit_ram_minus">-</button><button class="small" @click="limit_ram_plus">+</button><span class="hidden">{{values.limit.ram}}</span>"
-            <span class="tag">cpu:</span> "<input v-model="values.limit.cpu"/><button class="small" @click="limit_cpu_minus">-</button><button class="small" @click="limit_cpu_plus">+</button><span class="hidden">{{values.limit.cpu}}</span>"</pre>
+        <i>resources:</i>
+          <i>requests:</i>
+            <i>memory:</i> "<input v-model="values.request.ram"/><button class="small" @click="request_ram_minus">-</button><button class="small" @click="request_ram_plus">+</button><span class="hidden">{{values.request.ram}}</span>"
+            <i>cpu:</i> "<input v-model="values.request.cpu"/><button class="small" @click="request_cpu_minus">-</button><button class="small" @click="request_cpu_plus">+</button><span class="hidden">{{values.request.cpu}}</span>"
+          <i>limits:</i>
+            <i>memory:</i> "<input v-model="values.limit.ram"/><button class="small" @click="limit_ram_minus">-</button><button class="small" @click="limit_ram_plus">+</button><span class="hidden">{{values.limit.ram}}</span>"
+            <i>cpu:</i> "<input v-model="values.limit.cpu"/><button class="small" @click="limit_cpu_minus">-</button><button class="small" @click="limit_cpu_plus">+</button><span class="hidden">{{values.limit.cpu}}</span>"</pre>
   </td>
 </tr>
 <tr><!-- VOLUME SECTION -->
   <td v-if="showEditor" class="line">
-    <input id="v1" type="checkbox" v-model="section.volume1"><label for="v1">volume mount</label><div v-if="section.volume1">
-      <input id="secret"  class="padded" type="checkbox" v-model="section.secret"><label for="secret">secret mount</label><br/>
-    <input id="empty"   class="padded" type="checkbox" v-model="section.empty"><label for="empty">emptyDir mount</label><br/>
-      <input id="subpath" class="padded" type="checkbox" v-model="section.subpath"><label for="subpath">subpath</label>
+    <el-popover placement="top-start" :width="400" trigger="hover"
+      title="Volumes">
+      <template #reference>
+        <el-checkbox id="v1" v-model="section.volume1">volume mount</el-checkbox>
+      </template>
+      <p>Mount external information as volumes, secrets or configmap elements.</p>
+    </el-popover>
+        <div v-if="section.volume1">
+      <el-checkbox id="secret"  class="padded" v-model="section.secret">secret mount</el-checkbox><br/>
+    <el-checkbox id="empty"   class="padded" v-model="section.empty">emptyDir mount</el-checkbox><br/>
+      <el-checkbox id="subpath" class="padded" v-model="section.subpath">subpath</el-checkbox>
     </div>
   </td>
-  <td v-if="showEditor"><pre v-if="section.volume1" class="deployment">        <span class="tag">volumeMounts:</span>
+  <td v-if="showEditor"><pre v-if="section.volume1" class="deployment">        <i>volumeMounts:</i>
           - <b class="volume1 tag">name</b>: <input v-model="values.volume1"><span class="hidden">{{values.volume1}}</span>
-            <span class="tag">mountPath:</span> <input class="long" v-model="values.path1"><span class="hidden">{{values.path1}}</span>
-            <span v-if="section.subpath"><span class="tag">subPath:</span> <input v-model="values.file1"><span class="hidden">{{values.file1}}</span></span><span
+            <i>mountPath:</i> <input class="long" v-model="values.path1"><span class="hidden">{{values.path1}}</span>
+            <span v-if="section.subpath"><i>subPath:</i> <input v-model="values.file1"><span class="hidden">{{values.file1}}</span></span><span
             v-if="section.secret">
           - <b class="secret1 tag">name</b>: <input v-model="values.secret1"><span class="hidden">{{values.secret1}}</span>
-            <span class="tag">mountPath:</span> <input class="long" v-model="values.secretpath1"><span class="hidden">{{values.secretpath1}}</span>
-            <span class="tag">subPath:</span> <input v-model="values.secretfile1"><span class="hidden">{{values.secretfile1}}</span></span><span
+            <i>mountPath:</i> <input class="long" v-model="values.secretpath1"><span class="hidden">{{values.secretpath1}}</span>
+            <i>subPath:</i> <input v-model="values.secretfile1"><span class="hidden">{{values.secretfile1}}</span></span><span
             v-if="section.empty">
           - <b class="empty1 tag">name</b>: <input v-model="values.empty1"><span class="hidden">{{values.empty1}}</span>
-            <span class="tag">mountPath:</span> <input class="long" v-model="values.emptypath1"><span class="hidden">{{values.emptypath1}}</span>
+            <i>mountPath:</i> <input class="long" v-model="values.emptypath1"><span class="hidden">{{values.emptypath1}}</span>
             </pre>
   </td>
 </tr>
 <tr>
   <td v-if="showEditor"></td>
-  <td v-if="showEditor"><pre v-if="section.volume1" class="deployment">      <span class="tag">volumes:</span>
-      - <span class="tag">name:</span> <b class="volume1">{{values.volume1}}</b>
-        <span class="tag">configMap:</span>
-          <span class="tag">name:</span> <b class="name">{{values.name}}</b>-external-config<span v-if="section.secret">
-      - <span class="tag">name:</span> <b class="secret1">{{values.secret1}}</b>
-        <span class="tag">secret:</span>
-          <span class="tag">secretName:</span> <b class="name">{{values.name}}</b>-secret</span><span v-if="section.empty">
-      - <span class="tag">name:</span> <b class="secret1">{{values.empty1}}</b>
-        <span class="tag">emptyDir: {}</span></span></pre></td>
+  <td v-if="showEditor"><pre v-if="section.volume1" class="deployment">      <i>volumes:</i>
+      - <i>name:</i> <b class="volume1">{{values.volume1}}</b>
+        <i>configMap:</i>
+          <i>name:</i> <b class="name">{{values.name}}</b>-external-config<span v-if="section.secret">
+      - <i>name:</i> <b class="secret1">{{values.secret1}}</b>
+        <i>secret:</i>
+          <i>secretName:</i> <b class="name">{{values.name}}</b>-secret</span><span v-if="section.empty">
+      - <i>name:</i> <b class="secret1">{{values.empty1}}</b>
+        <i>emptyDir: {}</i></span></pre></td>
 </tr>
 <tr>
   <td v-if="showEditor" class="line">
-    <input id="config" type="checkbox" v-model="section.config"><label for="config">config map</label>
+    <el-popover placement="top-start" :width="400" trigger="hover"
+      title="Config map">
+      <template #reference>
+        <el-checkbox id="config" v-model="section.config">config map</el-checkbox>
+      </template>
+      <p>Define a configmap with a file as content, then mount it as volume on a container pod</p>
+    </el-popover>
   </td>
   <td v-if="showEditor"><pre v-if="section.config" class="config">
 ---
-<span class="tag">apiVersion:</span> v1
-<span class="tag">kind:</span> ConfigMap
-<span class="tag">metadata:</span>
-  <span class="tag">name:</span> {{values.name}}-external-config
-<span class="tag">data:</span>
-  {{values.file1}}: |
+<i>apiVersion:</i> v1
+<i>kind:</i> ConfigMap
+<i>metadata:</i>
+  <i>name:</i> {{values.name}}-external-config
+<i>data:</i>
+  <input v-model="values.file1" /><span class="hidden" pre-line>{{values.file1}}</span>: |
 <textarea v-model="values.configdata"  rows="10"></textarea><span class="hidden" pre-line>{{computedConfig}}</span></pre>
   </td>
 </tr>
 
 <tr>  
-  <td v-if="showEditor" class="line"><input id="service" type="checkbox" v-model="section.service"><label for="service">service</label></td>
+  <td v-if="showEditor" class="line">
+    <el-popover placement="top-start" :width="400" trigger="hover"
+      title="Service">
+      <template #reference>
+        <el-checkbox id="service" v-model="section.service">service</el-checkbox>
+      </template>
+      <p>Expose the applications running on the pods through an stable location address. You can toggle between
+        <ul>
+          <li>ClusterIP</li>
+          <li>NodePort</li>
+          <li>LoadBalancer</li>
+      </ul>
+        
+      </p>
+    </el-popover>
+  </td>
   <td v-if="showEditor"><pre v-if="section.service" class="service">
 ---
-<span class="tag">apiVersion:</span> v1
-<span class="tag">kind:</span> Service
-<span class="tag">metadata:</span>
-  <span class="tag">name:</span> <b class="name">{{values.name}}</b>
-<span class="tag">spec:</span>
-  <span class="tag">selector:</span>
-    <span class="tag">app:</span> <b class="name">{{values.name}}</b>
-  <span class="tag">type:</span> <input v-model="values.serviceType"><button class="small" @click="type_minus">-</button><button class="small" @click="type_plus">+</button><span class="hidden">{{values.serviceType}}</span>
-  <span class="tag">ports:</span>
-  - <span class="tag">name:</span> http
-    <span class="tag">protocol:</span> TCP
-    <span class="tag">port:</span> <input v-model="values.port"><span class="hidden">{{values.port}}</span>
-    <span class="tag">targetPort:</span> <input v-model="values.targetPort"><span class="hidden">{{values.targetPort}}</span>
+<i>apiVersion:</i> v1
+<i>kind:</i> Service
+<i>metadata:</i>
+  <i>name:</i> <b class="name">{{values.name}}</b>
+<i>spec:</i>
+  <i>selector:</i>
+    <i>app:</i> <b class="name">{{values.name}}</b>
+  <i>type:</i> <input v-model="values.serviceType"><button class="small" @click="type_minus">-</button><button class="small" @click="type_plus">+</button><span class="hidden">{{values.serviceType}}</span>
+  <i>ports:</i>
+  - <i>name:</i> http
+    <i>protocol:</i> TCP
+    <i>port:</i> <input v-model="values.port"><span class="hidden">{{values.port}}</span>
+    <i>targetPort:</i> <input v-model="values.targetPort"><span class="hidden">{{values.targetPort}}</span>
       </pre>
   </td>
 </tr>
 <tr>
-  <td v-if="showEditor" class="line"><input id="ingress" type="checkbox" v-model="section.ingress"><label for="ingress">ingress</label></td>
+  <td v-if="showEditor" class="line">
+    <el-popover placement="top-start" :width="400" trigger="hover"
+      title="Ingress">
+      <template #reference>
+        <el-checkbox id="ingress" v-model="section.ingress">ingress</el-checkbox>
+      </template>
+      <p>Ingress object configures the external load balancer with http routes to services running on the cluster</p>
+    </el-popover>
+  </td>
   <td v-if="showEditor"><pre v-if="section.ingress" class="kustomize">
 ---          
-<span class="tag">apiVersion:</span> networking.k8s.io/v1
-<span class="tag">kind:</span> Ingress
-<span class="tag">metadata:</span>
-  <span class="tag">name:</span> <b class="name">{{values.name}}</b>
-  <span class="tag">annotations:</span>
-    <span class="tag">nginx.</span>ingress.kubernetes.io/rewrite-target: /
-<span class="tag">spec:</span>
-  <span class="tag">rules:</span>
-  - <span class="tag">http:</span>
-      <span class="tag">paths:</span>
-      - <span class="tag">path:</span> <input v-model="values.ingressPath"><span class="hidden">{{values.ingressPath}}</span>
-        <span class="tag">pathType:</span> Prefix
-        <span class="tag">backend:</span>
-          <span class="tag">service:</span>
-            <span class="tag">name:</span> <b class="name">{{values.name}}</b>
-            <span class="tag">port:</span>
-              <span class="tag">number:</span> {{values.port}}
+<i>apiVersion:</i> networking.k8s.io/v1
+<i>kind:</i> Ingress
+<i>metadata:</i>
+  <i>name:</i> <b class="name">{{values.name}}</b>
+  <i>annotations:</i>
+    <i>nginx.</i>ingress.kubernetes.io/rewrite-target: /
+<i>spec:</i>
+  <i>rules:</i>
+  - <i>http:</i>
+      <i>paths:</i>
+      - <i>path:</i> <input v-model="values.ingressPath"><span class="hidden">{{values.ingressPath}}</span>
+        <i>pathType:</i> Prefix
+        <i>backend:</i>
+          <i>service:</i>
+            <i>name:</i> <b class="name">{{values.name}}</b>
+            <i>port:</i>
+              <i>number:</i> {{values.port}}
 </pre>
   </td>
 </tr>  
 <tr>
-  <td v-if="showEditor" class="line"><input id="kustomize" type="checkbox" v-model="section.kustomize"><label for="kustomize">kustomize</label></td>
+  <td v-if="showEditor" class="line">
+  <el-popover placement="top-start" :width="400" trigger="hover"
+      title="Kustomize">
+      <template #reference>
+        <el-checkbox id="kustomize" v-model="section.kustomize">kustomize</el-checkbox>
+    </template>
+    <p>Kustomize is an utility to reduce boilerplate when creating kubernetes descriptors. 
+      It's also included with kubectl so you can run: kubectl apply -k .
+    </p>
+    </el-popover>
+  </td>
   <td v-if="showEditor"><pre v-if="section.kustomize" class="kustomize">
 ---
-<span class="tag">resources:</span>
+<i>resources:</i>
 - <b class="name">{{values.name}}</b>-deployment.yaml
 - <b class="name">{{values.name}}</b>-service.yaml
 
-<span class="tag">configMapGenerator:</span>
-- <span class="tag">name:</span> <b class="name">{{values.name}}</b>-external-config
-  <span class="tag">files:</span>
+<i>configMapGenerator:</i>
+- <i>name:</i> <b class="name">{{values.name}}</b>-external-config
+  <i>files:</i>
   - {{values.file1}}={{values.file1}}
 
-<span class="tag">images:</span>
-- <span class="tag">name:</span> {{values.image}}
-  <span class="tag">digest:</span> sha256:<input v-model="values.digest"><span class="hidden">{{values.digest}}</span>
+<i>images:</i>
+- <i>name:</i> {{values.image}}
+  <i>digest:</i> sha256:<input v-model="values.digest"><span class="hidden">{{values.digest}}</span>
     </pre>
   </td>
 </tr>  
@@ -262,4 +411,6 @@
   <script src="/script.js"></script> 
 
 </html>
+
+
 

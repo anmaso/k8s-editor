@@ -119,7 +119,10 @@ tdx {
 }
 
 .config textarea {
-  margin-left: 3remx;
+  margin-left: 3rem;
+  margin-top: .2rem;
+  border: 1px solid #aaa;
+  width: 80%;
 }
 
 .ribbon {
@@ -128,7 +131,8 @@ tdx {
   top: 5px;
 }
 
-.tag{
+.tag, i{
+  font-style: normal;
   color: #4f7ede;
 }
 

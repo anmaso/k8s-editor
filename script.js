@@ -87,6 +87,9 @@ const App = {
     const addEnvs = ()=> values.value.envs.push({name:'name', value:'value'})
     const removeEnvs = ()=> (values.value.envs.length>1) && values.value.envs.pop();
     
+    const addReplicas = ()=> values.value.replicas = values.value.replicas+1;
+    const removeReplicas = ()=> values.value.replicas = values.value.replicas>1? values.value.replicas-1:values.value.replicas;
+    
     const save = ()=>{
       localStorage.setItem('values', JSON.stringify(values.value));
       localStorage.setItem('section', JSON.stringify(section.value));
@@ -161,8 +164,13 @@ const App = {
   
       type_plus,
       type_minus,
+      
       addEnvs,
       removeEnvs,
+      
+      addReplicas,
+      removeReplicas,
+      
       section,
       values,
       save,
@@ -174,6 +182,7 @@ const App = {
   }
 }
 const app=window.Vue.createApp(App)
+app.use(ElementPlus)
 
 app.directive('focus', {
   // When the bound element is mounted into the DOM...

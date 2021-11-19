@@ -1,6 +1,3 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -9,18 +6,13 @@
     <link rel="icon" href="https://cdn.glitch.me/80a8493d-689e-483d-8ae9-bc1956812b5a%2Fk8s-editor.png?v=1637011899533">
 
 
-
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">    
 
     
     <script src="https://unpkg.com/vue@next"></script>  
-
-      <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />
-  <script src="//unpkg.com/element-plus"></script>
-
-    
-    
+    <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />
+    <script src="//unpkg.com/element-plus"></script>
     <script src="/fileSaver.js"></script>
     <script src="/samples.js"></script>
   </head>
@@ -38,9 +30,7 @@
   <td></td>
   <td>
     <h1><img src="https://cdn.glitch.me/80a8493d-689e-483d-8ae9-bc1956812b5a%2Fk8s-editor.png?v=1637011899533" height="30" align="bottom"> Kubernetes yaml editor</h1>
-          <p>
-            Simple utility page to write kubernetes descriptor files with ease.
-    </p>
+    <p>Simple utility page to write kubernetes descriptor files with ease.</p>
   </td>
   <td></td>
   <td></td>
@@ -50,13 +40,14 @@
     <span  v-if="showEditor">Add optional sections by checking the boxes</span>
     <span v-else>Here you can edit the descriptors freely, but note that changes will be lost if you switch back to the editor. </span>
   </td>
-  <td v-if="showEditor" ><pre id="deployment" class="deployment">
+  <td v-if="showEditor" >
+<pre id="deployment" class="deployment">
 <i>apiVersion</i>: apps/v1
 <i>kind:</i> Deployment
 <i>metadata:</i>
   <i>name</i>: <input v-model="values.name" /><span class="hidden">{{values.name}}</span>
 <i>spec:</i>
-  <i>replicas:</i> <input v-model="values.replicas"/><button class="small" @click="removeReplicas">-</button><button class="small" @click="addReplicas">+</button><span class="hidden">{{values.replicas}}</span>
+  <i>replicas:</i> <input v-model="values.replicas"/><a class="small" @click="removeReplicas"><i class="fa fa-minus-circle"></i></a><a class="small" @click="addReplicas"><i class="fa fa-plus-circle"></i></a><span class="hidden">{{values.replicas}}</span>
   <i>selector:</i>
     <i>matchLabels:<i>
       <i>app:</i> <b class="name">{{values.name}}</b>
@@ -93,22 +84,7 @@
           
           
 </tr>
-<!-- image pull secret -->
-<tr>
-  <td v-if="showEditor" class="line">
-     <el-popover placement="top-start" :width="400" trigger="hover"
-      title="Image Pull Secrets"
-      content="If you are using images from a private container registry, you need to provide the pod with a 'kubernetes docker type' secret in order to be able to pull images.">
-      <template #reference>
-      <el-checkbox id="ips" v-model="section.imagePullSecrets"/>image Pull Secrets</el-checkbox>
-    </template>
-    </el-popover>
-    
-    </td>
-  <td v-if="showEditor"><pre v-if="section.imagePullSecrets" class="deployment">      imagePullSecrets:
-      - <i>name:</i> <input class="long" v-model="values.imagePullSecrets"/><span class="hidden">{{values.imagePullSecrets}}</span></pre>
-  </td>
-</tr>
+
           
 <tr>
   <td v-if="showEditor"></td>
@@ -121,11 +97,11 @@
 <!-- PROBES -->
 <tr>
   <td v-if="showEditor" class="line">
-    <el-popover placement="top-start" :width="400" trigger="hover"
-      title="Probes"
+    <el-checkbox id="probes" v-model="section.probes">probes</el-checkbox>
+    <el-popover placement="top" :width="400" trigger="hover"  title="Probes"
       content="Define probes to check if app is live (if not, pod will be deleted) and ready (if not pod will be remove from service load balancing)">
       <template #reference>
-        <el-checkbox id="probes" v-model="section.probes">probes</el-checkbox>
+        <i class="fa fa-info-circle"></i>
       </template>
     </el-popover>
   </td>
@@ -149,11 +125,12 @@
 <!-- PORTS -->
 <tr>
   <td v-if="showEditor" class="line">
-    <el-popover placement="top-start" :width="400" trigger="hover"
+    <el-checkbox id="ports" v-model="section.ports">ports</el-checkbox>
+    <el-popover placement="top" :width="400" trigger="hover"
       title="Ports"
       content="This section is not mandatory, it provides info on ports open on this pod for other tools to instrospect it.">
       <template #reference>
-        <el-checkbox id="ports" v-model="section.ports">ports</el-checkbox>
+        <i class="fa fa-info-circle"></i>
       </template>
     </el-popover>
   </td>
@@ -165,11 +142,10 @@
 <!-- CMD / ARGS -->
 <tr>
   <td v-if="showEditor" class="line">
-    <el-popover placement="top-start" :width="400" trigger="hover"
+    <el-checkbox id="cmd" v-model="section.cmd"/>cmd / args</el-checkbox> 
+    <el-popover placement="top" :width="400" trigger="hover"
       title="CMD / ARGS">
-      <template #reference>
-	      <el-checkbox id="cmd" v-model="section.cmd"/>cmd / args</el-checkbox> 
-      </template>
+      <template #reference><i class="fa fa-info-circle"></i></template>
     <p>
       Change the initial start command of the container.<br/>
       The provided command will start the container with a bash shell (useful for debugging purposes)
@@ -184,28 +160,28 @@
 <!-- ENV -->
 <tr>
   <td v-if="showEditor" class="line">
-     <el-popover placement="top-start" :width="400" trigger="hover"
+     <el-checkbox id="envs" v-model="section.envs"/>env vars<br/></el-checkbox>
+     <el-popover placement="top" :width="400" trigger="hover"
       title="ENV">
-      <template #reference>
-        <el-checkbox id="envs" v-model="section.envs"/>env vars<br/></el-checkbox>
-       </template>
+      <template #reference><i class="fa fa-info-circle"></i></template>
       <p>Define environment variables for the container</p>
       <p>You can add/remove variables using the +/- buttons</p>
       </el-popover>
-      <el-popover  v-if="section.envs" placement="top-start" :width="400" trigger="hover"
+      <el-checkbox class="padded" v-model="section.envconfig">from configmap</el-checkbox>
+      <el-popover  v-if="section.envs" placement="top" :width="400" trigger="hover"
       title="env from configmap">
       <template #reference>
-        <el-checkbox class="padded" v-model="section.envconfig">from configmap</el-checkbox>
+        <i class="fa fa-info-circle"></i>
       </template>
         <p>
           Creates environment variables from key/values on a 
         </p>
     </el-popover>
-      <el-checkbox v-if="section.envs" class="padded" v-model="section.envsecret">from secret</el-checkbox>
+    <el-checkbox v-if="section.envs" class="padded" v-model="section.envsecret">from secret</el-checkbox>
   </td>
   <td v-if="showEditor"><pre v-if="section.envs" class="deployment">        <i>env:</i> 
         <span v-for="env in values.envs">- <i>name:</i> <input v-model="env.name"><span class="hidden">{{env.name}}</span>
-          <i>value:</i> <input v-model="env.value"><button class="small" @click="removeEnvs">-</button><button class="small" @click="addEnvs">+</button><span class="hidden">{{env.value}}</span>
+          <i>value:</i> <input v-model="env.value"><a class="small" @click="removeEnvs"><i class="fa fa-minus-circle"></i></a><a class="small" @click="addEnvs"><i class="fa fa-plus-circle"></i></a><span class="hidden">{{env.value}}</span>
         </span><span v-if="section.envconfig||section.envsecret"><i>envFrom:</i><span v-if="section.envconfig">
         - <i>configMapRef:</i>
             <i>name:</i> {{values.volume1}}</span><span v-if="section.envsecret">
@@ -218,10 +194,11 @@
 <!-- RESOURCES -->          
 <tr>
   <td v-if="showEditor" class="line">
-    <el-popover placement="top-start" :width="400" trigger="hover"
+    <el-checkbox id="reso" v-model="section.resources"/>resources</el-checkbox> 
+    <el-popover placement="top" :width="400" trigger="hover"
       title="Container resources">
       <template #reference>
-        <el-checkbox id="reso" v-model="section.resources"/>resources</el-checkbox> 
+        <i class="fa fa-info-circle"></i>
       </template>
       <p>Define the minimum and maximum expected resources to be used by the application</p>
       <p>Use the +/- buttons to toggle between predefined values</p>
@@ -236,20 +213,19 @@
   <td v-if="showEditor"><pre id="deployment2" v-if="section.resources" class="deployment">
         <i>resources:</i>
           <i>requests:</i>
-            <i>memory:</i> "<input v-model="values.request.ram"/><button class="small" @click="request_ram_minus">-</button><button class="small" @click="request_ram_plus">+</button><span class="hidden">{{values.request.ram}}</span>"
-            <i>cpu:</i> "<input v-model="values.request.cpu"/><button class="small" @click="request_cpu_minus">-</button><button class="small" @click="request_cpu_plus">+</button><span class="hidden">{{values.request.cpu}}</span>"
+            <i>memory:</i> "<input v-model="values.request.ram"/><a class="small" @click="request_ram_minus"><i class="fa fa-minus-circle"></i></a><a class="small" @click="request_ram_plus"><i class="fa fa-plus-circle"></i></a><span class="hidden">{{values.request.ram}}</span>"
+            <i>cpu:</i> "<input v-model="values.request.cpu"/><a class="small" @click="request_cpu_minus"><i class="fa fa-minus-circle"></i></a><a class="small" @click="request_cpu_plus"><i class="fa fa-plus-circle"></i></a><span class="hidden">{{values.request.cpu}}</span>"
           <i>limits:</i>
-            <i>memory:</i> "<input v-model="values.limit.ram"/><button class="small" @click="limit_ram_minus">-</button><button class="small" @click="limit_ram_plus">+</button><span class="hidden">{{values.limit.ram}}</span>"
-            <i>cpu:</i> "<input v-model="values.limit.cpu"/><button class="small" @click="limit_cpu_minus">-</button><button class="small" @click="limit_cpu_plus">+</button><span class="hidden">{{values.limit.cpu}}</span>"</pre>
+            <i>memory:</i> "<input v-model="values.limit.ram"/><a class="small" @click="limit_ram_minus"><i class="fa fa-minus-circle"></i></a><a class="small" @click="limit_ram_plus"><i class="fa fa-plus-circle"></i></a><span class="hidden">{{values.limit.ram}}</span>"
+            <i>cpu:</i> "<input v-model="values.limit.cpu"/><a class="small" @click="limit_cpu_minus"><i class="fa fa-minus-circle"></i></a><a class="small" @click="limit_cpu_plus"><i class="fa fa-plus-circle"></i></a><span class="hidden">{{values.limit.cpu}}</span>"</pre>
   </td>
 </tr>
 <tr><!-- VOLUME SECTION -->
   <td v-if="showEditor" class="line">
-    <el-popover placement="top-start" :width="400" trigger="hover"
+    <el-checkbox id="v1" v-model="section.volume1">volume mount</el-checkbox>
+    <el-popover placement="top" :width="400" trigger="hover"
       title="Volumes">
-      <template #reference>
-        <el-checkbox id="v1" v-model="section.volume1">volume mount</el-checkbox>
-      </template>
+      <template #reference><i class="fa fa-info-circle"></i></template>
       <p>Mount external information as volumes, secrets or configmap elements.</p>
     </el-popover>
         <div v-if="section.volume1">
@@ -272,6 +248,21 @@
             </pre>
   </td>
 </tr>
+<!-- image pull secret -->
+<tr>
+  <td v-if="showEditor" class="line">
+     <el-checkbox id="ips" v-model="section.imagePullSecrets"/>image Pull Secrets</el-checkbox>
+     <el-popover placement="top" :width="400" trigger="hover" hide-after="10"
+      title="Image Pull Secrets"
+      content="If you are using images from a private container registry, you need to provide the pod with a 'kubernetes docker type' secret in order to be able to pull images.">
+      <template #reference><i class="fa fa-info-circle"></i></template>
+    </el-popover>
+    
+    </td>
+  <td v-if="showEditor"><pre v-if="section.imagePullSecrets" class="deployment">      imagePullSecrets:
+      - <i>name:</i> <input class="long" v-model="values.imagePullSecrets"/><span class="hidden">{{values.imagePullSecrets}}</span></pre>
+  </td>
+</tr>
 <tr>
   <td v-if="showEditor"></td>
   <td v-if="showEditor"><pre v-if="section.volume1" class="deployment">      <i>volumes:</i>
@@ -286,11 +277,10 @@
 </tr>
 <tr>
   <td v-if="showEditor" class="line">
-    <el-popover placement="top-start" :width="400" trigger="hover"
+    <el-checkbox id="config" v-model="section.config">config map</el-checkbox>
+    <el-popover placement="top" :width="400" trigger="hover"
       title="Config map">
-      <template #reference>
-        <el-checkbox id="config" v-model="section.config">config map</el-checkbox>
-      </template>
+      <template #reference><i class="fa fa-info-circle"></i></template>
       <p>Define a configmap with a file as content, then mount it as volume on a container pod</p>
     </el-popover>
   </td>
@@ -308,11 +298,10 @@
 
 <tr>  
   <td v-if="showEditor" class="line">
-    <el-popover placement="top-start" :width="400" trigger="hover"
+    <el-checkbox id="service" v-model="section.service">service</el-checkbox>
+    <el-popover placement="top" :width="400" trigger="hover"
       title="Service">
-      <template #reference>
-        <el-checkbox id="service" v-model="section.service">service</el-checkbox>
-      </template>
+      <template #reference><i class="fa fa-info-circle"></i></template>
       <p>Expose the applications running on the pods through an stable location address. You can toggle between
         <ul>
           <li>ClusterIP</li>
@@ -332,7 +321,7 @@
 <i>spec:</i>
   <i>selector:</i>
     <i>app:</i> <b class="name">{{values.name}}</b>
-  <i>type:</i> <input v-model="values.serviceType"><button class="small" @click="type_minus">-</button><button class="small" @click="type_plus">+</button><span class="hidden">{{values.serviceType}}</span>
+  <i>type:</i> <input v-model="values.serviceType"><a class="small" @click="type_minus"><i class="fa fa-minus-circle"></i></a><a class="small" @click="type_plus"><i class="fa fa-plus-circle"></i></a><span class="hidden">{{values.serviceType}}</span>
   <i>ports:</i>
   - <i>name:</i> http
     <i>protocol:</i> TCP
@@ -343,11 +332,10 @@
 </tr>
 <tr>
   <td v-if="showEditor" class="line">
-    <el-popover placement="top-start" :width="400" trigger="hover"
+    <el-checkbox id="ingress" v-model="section.ingress">ingress</el-checkbox>
+    <el-popover placement="top" :width="400" trigger="hover"
       title="Ingress">
-      <template #reference>
-        <el-checkbox id="ingress" v-model="section.ingress">ingress</el-checkbox>
-      </template>
+      <template #reference><i class="fa fa-info-circle"></i></template>
       <p>Ingress object configures the external load balancer with http routes to services running on the cluster</p>
     </el-popover>
   </td>
@@ -375,11 +363,10 @@
 </tr>  
 <tr>
   <td v-if="showEditor" class="line">
-  <el-popover placement="top-start" :width="400" trigger="hover"
+  <el-checkbox id="kustomize" v-model="section.kustomize">kustomize</el-checkbox>
+  <el-popover placement="top" :width="400" trigger="hover"
       title="Kustomize">
-      <template #reference>
-        <el-checkbox id="kustomize" v-model="section.kustomize">kustomize</el-checkbox>
-    </template>
+      <template #reference><i class="fa fa-info-circle"></i></template>
     <p>Kustomize is an utility to reduce boilerplate when creating kubernetes descriptors. 
       It's also included with kubectl so you can run: kubectl apply -k .
     </p>
@@ -411,6 +398,7 @@
   <script src="/script.js"></script> 
 
 </html>
+
 
 
 

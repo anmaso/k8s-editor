@@ -78,8 +78,13 @@ tdx {
 }
 .small {
   padding: 0px;
-  border: 1px solid #ccc;
   width: 10px;
+  
+}
+.small i{
+  color : #ccc;
+  margin-left: 2px;
+  font-size: 0.8rem;
 }
 
 .line {
@@ -156,4 +161,10 @@ tdx {
 
 .smalltext {
   font-size: .8rem;
+}
+
+i.fa-info-circle {
+  margin-left:.4rem;
+  vertical-align: text-top;
+  color: #ccc;
 }

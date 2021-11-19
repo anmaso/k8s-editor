@@ -77,13 +77,19 @@ window.SAMPLES = {
       ports     : true,
       resources : true,
       volume1   : true,
+      probes    : true,
       cmd       : true,
       envs      : true,
+      envconfig : true,
+      envsecret : true,
       service   : true,
       kustomize : true,
       config    : true,
       ingress   : true,
-      secret1   : true
+      secret1   : true,
+      subpath   : true,
+      empty     : true,
+      secret    : true
     }
   },
   nginx: {

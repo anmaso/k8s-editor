@@ -191,4 +191,42 @@ app.directive('focus', {
     el.focus()
   }
 });
+app.component('button-counter', {
+  data() {
+    return {
+      count: 0
+    }
+  },
+  template: `
+    <button @click="count++">
+      You clicked me {{ count }} times.
+    </button>`
+});
+
+app.component('t', {
+  props: {
+    w: String,
+    2: Boolean,
+    4: Boolean,
+    6: Boolean,
+    8: Boolean,
+    10: Boolean
+  },
+  computed: {
+    tabs : { get (){ 
+      return this['2']?'&nbsp'.repeat(2):''+
+             this['4']?'&nbsp'.repeat(4):''+
+             this['6']?'&nbsp'.repeat(6):''+
+             this['8']?'&nbsp'.repeat(8):''+
+             this['10']?'&nbsp'.repeat(10):'';
+        }}
+  },
+  data() {
+    return {
+      count: 0
+    }
+  },
+  template: `
+    <span><span v-html="tabs"/><i><slot></slot></i></span>`
+})
 app.mount("#vue");

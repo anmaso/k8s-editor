@@ -62,6 +62,7 @@
     <span  v-if="showEditor"><a href="#" @click="toggleEditor"><i class="fa fa-edit"></i> edit YAML</a><br/></span>
     <span  v-if="!showEditor"><a href="#" @click="toggleEditor"><i class="fa fa-tools"></i> show editor</a><br/></span>
     <a href="#" @click="copyDeployment"><i class="fa fa-copy"></i> copy to clipboard</a><br/>
+    <a href="#" @click="copyDeploymentKubectl"><i class="fa fa-copy"></i> copy to clipboard + kubeclt apply</a><br/>
     <a href="#" @click="clipDeployment"><i class="fa fa-upload"></i><img width="20" v-if="clipSaving" src="https://cdn.glitch.me/80a8493d-689e-483d-8ae9-bc1956812b5a%2Floading.gif?v=1636707275003"/> <span class="smalltext">upload to https://myclip.glitch.me/{{clip}} </span></a><br/>
     <a v-if="clip" href="#" @click="copyKubectl" class="smalltext"><i class="fa fa-copy"></i> curl https://myclip.glitch.me/{{clip}} | kubectl apply -f -</a><br/>
 

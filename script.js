@@ -67,6 +67,9 @@ const App = {
     const type_minus = ()=> values.value.serviceType=minus(type, values.value.serviceType);
     
     const copyDeployment = ()=> copyToClipboard(getText())
+    const copyDeploymentKubectl = ()=> copyToClipboard("cat <<EOF | kubectl apply -f -\n" + getText()+"\nEOF")
+
+
     const blob = (text)=>new Blob([text], {type: "text/plain;charset=utf-8"});
     
     const deploymentName = ()=>values.value.name+'-deployment.yaml';
@@ -141,6 +144,7 @@ const App = {
       fullDescriptor,
       showEditor,
       copyDeployment,
+      copyDeploymentKubectl,
       
       clip,
       clipDeployment,

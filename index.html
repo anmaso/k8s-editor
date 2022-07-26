@@ -62,6 +62,7 @@
     <span  v-if="showEditor"><a href="#" @click="toggleEditor"><i class="fa fa-edit"></i> edit YAML</a><br/></span>
     <span  v-if="!showEditor"><a href="#" @click="toggleEditor"><i class="fa fa-tools"></i> show editor</a><br/></span>
     <a href="#" @click="copyDeployment"><i class="fa fa-copy"></i> copy to clipboard</a><br/>
+    <a href="#" @click="copyDeploymentKubectl"><i class="fa fa-copy"></i> copy to clipboard + kubeclt apply</a><br/>
     <a href="#" @click="clipDeployment"><i class="fa fa-upload"></i><img width="20" v-if="clipSaving" src="https://cdn.glitch.me/80a8493d-689e-483d-8ae9-bc1956812b5a%2Floading.gif?v=1636707275003"/> <span class="smalltext">upload to https://myclip.glitch.me/{{clip}} </span></a><br/>
     <a v-if="clip" href="#" @click="copyKubectl" class="smalltext"><i class="fa fa-copy"></i> curl https://myclip.glitch.me/{{clip}} | kubectl apply -f -</a><br/>
 
@@ -76,8 +77,39 @@
       <a href="#" @click="save"><i class="fa fa-save"></i> save values to local storage</a><br/>
       <a href="#" @click="clear"><i class="fa fa-trash"></i> clear local storage</a><br/>
       <br/>
-      <a href="#" @click="load('complete')"><i class="fa fa-book"></i> load complete example</a><br/>
-      <a href="#" @click="load('nginx')"><i class="fa fa-book"></i> load nginx sample</a><br/>
+      <p>
+      Load sample templates:
+      </p>
+      <a href="#" @click="load('complete')"><el-popover placement="top" :width="400" trigger="hover"  title="Complete example"
+      content="Sample with all the options for the editor filled and expanded">
+      <template #reference>
+        <i class="fa fa-info-circle"></i>
+      </template>
+    </el-popover> complete</a><br/>
+      <a href="#" @click="load('nginx')"><el-popover placement="top" :width="400" trigger="hover"  title="Nginx + conf"
+      content="Sample nginx deployment with config file as a config map">
+      <template #reference>
+        <i class="fa fa-info-circle"></i>
+      </template>
+    </el-popover> nginx</a><br/>
+      <a href="#" @click="load('nodejs')"><el-popover placement="top" :width="400" trigger="hover"  title="Node http server"
+      content="Sample with nodejs http server declared on an index.js mounted as a configmap">
+      <template #reference>
+        <i class="fa fa-info-circle"></i>
+      </template>
+    </el-popover> node http</a><br/>
+      <a href="#" @click="load('postgres13')"><el-popover placement="top" :width="400" trigger="hover"  title="PostgreSQL"
+      content="PostgreSQL sample with required environment variables set">
+      <template #reference>
+        <i class="fa fa-info-circle"></i>
+      </template>
+    </el-popover> postgresql</a><br/>
+      <a href="#" @click="load('netshoot')"><el-popover placement="top" :width="400" trigger="hover"  title="Netshoot"
+      content="The netshoot container has a set of powerful networking tshooting tools that can be used to troubleshoot Docker networking issues. Along with these tools come a set of use-cases that show how this container can be used in real-world scenarios.">
+      <template #reference>
+        <i class="fa fa-info-circle"></i>
+      </template>
+    </el-popover> netshoot</a><br/>
       <br/>
     </span>
   </td>
@@ -259,7 +291,7 @@
     </el-popover>
     
     </td>
-  <td v-if="showEditor"><pre v-if="section.imagePullSecrets" class="deployment">      imagePullSecrets:
+  <td v-if="showEditor"><pre v-if="section.imagePullSecrets" class="deployment">      <i>imagePullSecrets:</i>
       - <i>name:</i> <input class="long" v-model="values.imagePullSecrets"/><span class="hidden">{{values.imagePullSecrets}}</span></pre>
   </td>
 </tr>

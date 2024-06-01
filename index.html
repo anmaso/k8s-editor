@@ -10,11 +10,20 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">    
 
     
-    <script src="https://unpkg.com/vue@next"></script>  
+    <script src="https://unpkg.com/vue@3.4.7/dist/vue.global.js"></script>  
     <link rel="stylesheet" href="//unpkg.com/element-plus/dist/index.css" />
     <script src="//unpkg.com/element-plus"></script>
     <script src="/fileSaver.js"></script>
     <script src="/samples.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C0X3PQD0BK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-C0X3PQD0BK');
+</script>
   </head>
   <body>
     <div class="ribbon">
@@ -58,7 +67,7 @@
     <i>spec:</i></pre>
   </td>
   <td rowspan="20" v-if="!showEditor" class="fullDescriptorWrap"><textarea class="fullDescriptor" v-model="fullDescriptor"></textarea></td>
-  <td rowspan="10" class="actions" >
+  <td rowspan="20" class="actions" >
     <span  v-if="showEditor"><a href="#" @click="toggleEditor"><i class="fa fa-edit"></i> edit YAML</a><br/></span>
     <span  v-if="!showEditor"><a href="#" @click="toggleEditor"><i class="fa fa-tools"></i> show editor</a><br/></span>
     <a href="#" @click="copyDeployment"><i class="fa fa-copy"></i> copy to clipboard</a><br/>
@@ -117,6 +126,21 @@
           
 </tr>
 
+<!-- SERVICE ACCOUNT NAME -->
+<tr>
+  <td v-if="showEditor" class="line">
+    <el-checkbox id="serviceAccountName" v-model="section.serviceAccountName">Service Account Name</el-checkbox> 
+    <el-popover placement="top" :width="400" trigger="hover"
+      title="Service Account Name">
+      <template #reference><i class="fa fa-info-circle"></i></template>
+    <p>
+      Specify the service account name for the pod.
+    </p>
+    </el-popover>
+  </td>
+  <td v-if="showEditor"><pre v-if="section.serviceAccountName" class="deployment">      <i>serviceAccountName:</i> <input class="long" v-model="values.serviceAccountName"><span class="hidden">{{values.serviceAccountName}}</span></pre>
+  </td>
+</tr>          
           
 <tr>
   <td v-if="showEditor"></td>

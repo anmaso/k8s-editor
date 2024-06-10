@@ -2,9 +2,10 @@ window.SAMPLES = {
   default: {
     values : {
       name      : 'nginx',
+      namespace : 'default',
       image     : 'docker.io/nginx',
       replicas  : 1,
-      imagePullSecrets: 'my-namespace-secret-for-pulling-image',
+      imagePullSecrets: 'secret-for-pulling',
       envs      : [{name:'name1', value:'value1'}],
       envconfig : false,
       envsecret : false,
@@ -49,9 +50,10 @@ window.SAMPLES = {
   complete: {
     values : {
       name      : 'myapp',
+      namespace : 'default',
       image     : 'eu.gcr.io/project/image:version',
       replicas  : 1,
-      imagePullSecrets: 'my-namespace-secret-for-pulling-image',
+      imagePullSecrets: 'secret-for-pulling',
       envs      : [{name:'name1', value:'value1'}],
       request   : {cpu:'100m', ram:'128Mi'},
       limit     : {cpu:'1000m', ram:'256Mi'},
@@ -73,6 +75,7 @@ window.SAMPLES = {
     },
     section: {
       replicas  : true,
+      namespace : true,
       imagePullSecrets: true,
       ports     : true,
       resources : true,
@@ -89,12 +92,14 @@ window.SAMPLES = {
       secret1   : true,
       subpath   : true,
       empty     : true,
-      secret    : true
+      secret    : true,
+      serviceAccountName: true
     }
   },
   nginx: {
     values : {
       name      : 'nginx',
+      namespace : 'default',
       image     : 'docker.io/nginx',
       replicas  : 1,
       imagePullSecrets: '',
@@ -144,6 +149,7 @@ window.SAMPLES = {
   nodejs: {
     values : {
       name      : 'nodejs-http-server',
+      namespace : 'default',
       image     : 'node',
       replicas  : 1,
       imagePullSecrets: '',

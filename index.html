@@ -38,7 +38,7 @@
 <tr>
   <td></td>
   <td>
-    <h1><img src="https://cdn.glitch.me/80a8493d-689e-483d-8ae9-bc1956812b5a%2Fk8s-editor.png?v=1637011899533" height="30" align="bottom"> Kubernetes yaml editor</h1>
+    <h1><a href="/"><img src="https://cdn.glitch.me/80a8493d-689e-483d-8ae9-bc1956812b5a%2Fk8s-editor.png?v=1637011899533" height="30" align="bottom"> Kubernetes yaml editor</a></h1>
     <p>Simple utility page to write kubernetes descriptor files with ease.</p>
   </td>
   <td></td>
@@ -55,17 +55,7 @@
 <i>kind:</i> Deployment
 <i>metadata:</i>
   <i>name</i>: <input v-model="values.name" /><span class="hidden">{{values.name}}</span>
-<i>spec:</i>
-  <i>replicas:</i> <input v-model="values.replicas"/><a class="small" @click="removeReplicas"><i class="fa fa-minus-circle"></i></a><a class="small" @click="addReplicas"><i class="fa fa-plus-circle"></i></a><span class="hidden">{{values.replicas}}</span>
-  <i>selector:</i>
-    <i>matchLabels:<i>
-      <i>app:</i> <b class="name">{{values.name}}</b>
-  <i>template:</i>
-    <i>metadata:</i>
-      <i>labels:</i>
-        <i>app:</i> <b class="name">{{values.name}}</b>
-    <i>spec:</i></pre>
-  </td>
+</pre></td>
   <td rowspan="20" v-if="!showEditor" class="fullDescriptorWrap"><textarea class="fullDescriptor" v-model="fullDescriptor"></textarea></td>
   <td rowspan="20" class="actions" >
     <span  v-if="showEditor"><a href="#" @click="toggleEditor"><i class="fa fa-edit"></i> edit YAML</a><br/></span>
@@ -122,25 +112,44 @@
       <br/>
     </span>
   </td>
+  </tr>
+<!-- NAMESPACE -->
+<tr>
+  <td v-if="showEditor" class="line">
+    <el-checkbox id="namespace" v-model="section.namespace">Namespace</el-checkbox> 
+    <el-popover placement="top" :width="400" trigger="hover"
+      title="Namespace">
+      <template #reference><i class="fa fa-info-circle"></i></template>
+    <p>
+      Specify the namespace for the deployment
+    </p>
+    </el-popover>
+  </td>
+  <td v-if="showEditor"><pre v-if="section.namespace" class="deployment">  <i>namespace:</i> <input class="long" v-model="values.namespace"><span class="hidden">{{values.namespace}}</span></pre>
+  </td>
+  
+</tr>          
+<tr>
+  <td></td>
+  <td v-if="showEditor" >
+<pre id="namespace" class="deployment">
+<i>spec:</i>
+  <i>replicas:</i> <input v-model="values.replicas"/><a class="small" @click="removeReplicas"><i class="fa fa-minus-circle"></i></a><a class="small" @click="addReplicas"><i class="fa fa-plus-circle"></i></a><span class="hidden">{{values.replicas}}</span>
+  <i>selector:</i>
+    <i>matchLabels:<i>
+      <i>app:</i> <b class="name">{{values.name}}</b>
+  <i>template:</i>
+    <i>metadata:</i>
+      <i>labels:</i>
+        <i>app:</i> <b class="name">{{values.name}}</b>
+    <i>spec:</i></pre>
+  </td>
+  
           
           
 </tr>
 
-<!-- SERVICE ACCOUNT NAME -->
-<tr>
-  <td v-if="showEditor" class="line">
-    <el-checkbox id="serviceAccountName" v-model="section.serviceAccountName">Service Account Name</el-checkbox> 
-    <el-popover placement="top" :width="400" trigger="hover"
-      title="Service Account Name">
-      <template #reference><i class="fa fa-info-circle"></i></template>
-    <p>
-      Specify the service account name for the pod.
-    </p>
-    </el-popover>
-  </td>
-  <td v-if="showEditor"><pre v-if="section.serviceAccountName" class="deployment">      <i>serviceAccountName:</i> <input class="long" v-model="values.serviceAccountName"><span class="hidden">{{values.serviceAccountName}}</span></pre>
-  </td>
-</tr>          
+
           
 <tr>
   <td v-if="showEditor"></td>
@@ -301,13 +310,28 @@
             v-if="section.empty">
           - <b class="empty1 tag">name</b>: <input v-model="values.empty1"><span class="hidden">{{values.empty1}}</span>
             <i>mountPath:</i> <input class="long" v-model="values.emptypath1"><span class="hidden">{{values.emptypath1}}</span>
-            </pre>
+            </span></pre>
   </td>
 </tr>
+<!-- SERVICE ACCOUNT NAME -->
+<tr>
+  <td v-if="showEditor" class="line">
+    <el-checkbox id="serviceAccountName" v-model="section.serviceAccountName">Service Account Name</el-checkbox> 
+    <el-popover placement="top" :width="400" trigger="hover"
+      title="Service Account Name">
+      <template #reference><i class="fa fa-info-circle"></i></template>
+    <p>
+      Specify the service account name for the pod.
+    </p>
+    </el-popover>
+  </td>
+  <td v-if="showEditor"><pre v-if="section.serviceAccountName" class="deployment">      <i>serviceAccountName:</i> <input class="long" v-model="values.serviceAccountName"><span class="hidden">{{values.serviceAccountName}}</span></pre>
+  </td>
+</tr>          
 <!-- image pull secret -->
 <tr>
   <td v-if="showEditor" class="line">
-     <el-checkbox id="ips" v-model="section.imagePullSecrets"/>image Pull Secrets</el-checkbox>
+     <el-checkbox id="ips" v-model="section.imagePullSecrets">image Pull Secrets</el-checkbox>
      <el-popover placement="top" :width="400" trigger="hover" hide-after="10"
       title="Image Pull Secrets"
       content="If you are using images from a private container registry, you need to provide the pod with a 'kubernetes docker type' secret in order to be able to pull images.">

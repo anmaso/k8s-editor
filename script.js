@@ -49,6 +49,8 @@ const App = {
     const values  = Vue.ref(init_values  || window.SAMPLES.default.values);
     const section = Vue.ref(init_section || window.SAMPLES.default.section);
  
+    values.value.serviceAccountName=values.value.name;
+    
     const cpu_values = ['100m', '200m', '500m', '1000m'];
     const ram_values = ['128Mi', '256Mi', '512Mi', '1024Mi'];
     const plus = (arr,v)=>arr[arr.indexOf(v)+1];

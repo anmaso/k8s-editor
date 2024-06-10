@@ -7,6 +7,11 @@ body {
   width: 940px;
 }
 
+h1 a {
+  text-decoration: none;
+  color: #006bd9;
+}
+
 .fields > div {
   margin-bottom: 2px;
 }

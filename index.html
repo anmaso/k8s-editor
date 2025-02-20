@@ -128,7 +128,27 @@
   <td v-if="showEditor"><pre v-if="section.namespace" class="deployment">  <i>namespace:</i> <input class="long" v-model="values.namespace"><span class="hidden">{{values.namespace}}</span></pre>
   </td>
   
-</tr>          
+</tr>
+  <tr>
+  <td v-if="showEditor" class="line">
+    <el-checkbox id="gcp_wi" v-model="section.gcp_wi">Labels</el-checkbox> 
+    <el-popover placement="top" :width="400" trigger="hover"
+      title="Annotations">
+      <template #reference><i class="fa fa-info-circle"></i></template>
+    <p>
+      Add labels to the deployment
+    </p>
+    </el-popover>
+  </td>
+  <td v-if="showEditor"><pre v-if="section.gcp_wi" class="deployment">
+  <i>annotations:</i>
+<template v-for="annotation in values.gcp_wi">
+    <input class="long" v-model="annotation.name"><span class="hidden">{{annotation.name}}</span><i>:</i> <input class="long" v-model="annotation.value"><span class="hidden">{{annotation.value}}</span>
+  </template>
+  </pre>
+  </td>
+  
+</tr>
 <tr>
   <td></td>
   <td v-if="showEditor" >

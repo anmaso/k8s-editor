@@ -3,6 +3,7 @@ window.SAMPLES = {
     values : {
       name      : 'nginx',
       namespace : 'default',
+      gcp_wi    : [{name:'name', value:'value'}],
       image     : 'docker.io/nginx',
       replicas  : 1,
       imagePullSecrets: 'secret-for-pulling',
@@ -32,6 +33,7 @@ window.SAMPLES = {
     },
     section: {
       replicas  : false,
+      gcp_wi    : false,
       imagePullSecrets: false,
       ports     : false,
       probes    : false,

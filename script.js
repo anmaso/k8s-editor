@@ -10,7 +10,7 @@
         document.body.removeChild(el);
       };
 
-const CLIP="https://myclip.glitch.me/";
+const CLIP="https://myclip.anmaso.es/";
 
 const id = (id)=>document.getElementById(id);
 const getPres = (cls)=> (cls ? Array.from(document.getElementsByClassName(cls)) : Array.from(document.getElementsByTagName('pre')));

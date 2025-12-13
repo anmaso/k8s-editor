@@ -139,6 +139,26 @@ tdx {
   position: absolute;
   right: 5px;
   top: 5px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.ribbon .dark-mode-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: #f4f4f4;
+  border-radius: 4px;
+  color: #326ce5;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.ribbon .dark-mode-icon:hover {
+  background: #e4e4e4;
 }
 
 .tag, i{
@@ -172,4 +192,92 @@ i.fa-info-circle {
   margin-left:.4rem;
   vertical-align: text-top;
   color: #ccc;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background: #1e1e1e;
+  color: #e0e0e0;
+}
+
+body.dark-mode h1 a {
+  color: #64b5f6;
+}
+
+body.dark-mode .name {
+  background: #4a2525;
+}
+
+body.dark-mode .image {
+  background: #254a25;
+}
+
+body.dark-mode b.volume1 {
+  background: #25254a;
+}
+
+body.dark-mode pre input {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border-bottom: 1px solid #555;
+}
+
+body.dark-mode table td:nth-child(2) {
+  background: #2a2a2a;
+}
+
+body.dark-mode table tr:nth-child(1) td:nth-child(2) {
+  background: #1e1e1e;
+}
+
+body.dark-mode .line {
+  border-top: 1px solid #444;
+  color: #e0e0e0;
+}
+
+body.dark-mode .actions a {
+  color: #e0e0e0;
+  background: #2a2a2a;
+  border-color: #555;
+}
+
+body.dark-mode .actions a:hover {
+  background: #3a3a3a;
+}
+
+body.dark-mode .actions a .fa {
+  color: #64b5f6;
+}
+
+body.dark-mode .config textarea {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border: 1px solid #555;
+}
+
+body.dark-mode .fullDescriptor {
+  background: #2a2a2a;
+  color: #e0e0e0;
+}
+
+body.dark-mode .tag,
+body.dark-mode i {
+  color: #64b5f6;
+}
+
+body.dark-mode .small i {
+  color: #888;
+}
+
+body.dark-mode i.fa-info-circle {
+  color: #666;
+}
+
+body.dark-mode .ribbon .dark-mode-icon {
+  background: #2a2a2a;
+  color: #64b5f6;
+}
+
+body.dark-mode .ribbon .dark-mode-icon:hover {
+  background: #3a3a3a;
 }

@@ -38,6 +38,23 @@ const App = {
       console.log('nothing to load from local storage')
       clear();
     }
+
+    const darkMode = Vue.ref(localStorage.getItem('darkMode') === 'true' || false);
+
+    const toggleDarkMode = () => {
+      darkMode.value = !darkMode.value;
+      localStorage.setItem('darkMode', darkMode.value);
+      if (darkMode.value) {
+        document.body.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+      }
+    };
+
+    // Apply dark mode on initial load
+    if (darkMode.value) {
+      document.body.classList.add('dark-mode');
+    }
     try{
       const load=document.location.search.replace('?','').split('=')[1];
       console.log("load",load)
@@ -147,43 +164,46 @@ const App = {
       showEditor,
       copyDeployment,
       copyDeploymentKubectl,
-      
+
       clip,
       clipDeployment,
       copyKubectl,
-      
+
       saveDeployment,
       saveService,
       saveConfig,
       saveKustomize,
       saveIngress,
-     
+
       request_cpu_plus,
       request_cpu_minus,
       request_ram_plus,
       request_ram_minus,
       limit_cpu_plus,
       limit_cpu_minus,
-      
+
       limit_ram_plus,
       limit_ram_minus,
-  
+
       type_plus,
       type_minus,
-      
+
       addEnvs,
       removeEnvs,
-      
+
       addReplicas,
       removeReplicas,
-      
+
       section,
       values,
       save,
       clear,
       load,
       computedConfig,
-      computedName
+      computedName,
+
+      darkMode,
+      toggleDarkMode
     }
   }
 }

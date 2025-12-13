@@ -265,8 +265,8 @@
     <el-checkbox v-if="section.envs" class="padded" v-model="section.envsecret">from secret</el-checkbox>
   </td>
   <td v-if="showEditor"><pre v-if="section.envs" class="deployment">        <i>env:</i> 
-        <span v-for="env in values.envs">- <i>name:</i> <input v-model="env.name"><span class="hidden">{{env.name}}</span>
-          <i>value:</i> <input v-model="env.value"><a class="small" @click="removeEnvs"><i class="fa fa-minus-circle"></i></a><a class="small" @click="addEnvs"><i class="fa fa-plus-circle"></i></a><span class="hidden">{{env.value}}</span>
+        <span v-for="(env, index) in values.envs">- <i>name:</i> <input v-model="env.name"><span class="hidden">{{env.name}}</span>
+          <i>value:</i> <input v-model="env.value"><a class="small" @click="removeEnvs(index)"><i class="fa fa-minus-circle"></i></a><a class="small" @click="addEnvs(index)"><i class="fa fa-plus-circle"></i></a><span class="hidden">{{env.value}}</span>
         </span><span v-if="section.envconfig||section.envsecret"><i>envFrom:</i><span v-if="section.envconfig">
         - <i>configMapRef:</i>
             <i>name:</i> {{values.volume1}}</span><span v-if="section.envsecret">

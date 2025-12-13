@@ -106,8 +106,26 @@ const App = {
     const saveConfig = ()=> saveAs( blob((getText('config'))), values.value.name+'-external-config.yaml');
     const saveIngress = ()=> saveAs( blob((getText('ingress'))), values.value.name+'-ingress.yaml');
     
-    const addEnvs = ()=> values.value.envs.push({name:'name', value:'value'})
-    const removeEnvs = ()=> (values.value.envs.length>1) && values.value.envs.pop();
+    const addEnvs = (index)=> {
+      if (index !== undefined) {
+        // Insert after the clicked element
+        values.value.envs.splice(index + 1, 0, {name:'name', value:'value'});
+      } else {
+        // Default behavior: add to end
+        values.value.envs.push({name:'name', value:'value'});
+      }
+    }
+    const removeEnvs = (index)=> {
+      if (values.value.envs.length > 1) {
+        if (index !== undefined) {
+          // Remove the specific element
+          values.value.envs.splice(index, 1);
+        } else {
+          // Default behavior: remove from end
+          values.value.envs.pop();
+        }
+      }
+    }
     
     const addReplicas = ()=> values.value.replicas = values.value.replicas+1;
     const removeReplicas = ()=> values.value.replicas = values.value.replicas>1? values.value.replicas-1:values.value.replicas;
